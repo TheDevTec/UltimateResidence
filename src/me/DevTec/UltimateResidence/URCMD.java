@@ -12,7 +12,7 @@ public class URCMD implements CommandExecutor {
 
 	@Override
 	public boolean onCommand(CommandSender s, Command dawd, String dawds, String[] args) {
-		String d = "&c&lUltimateResidence &8&l» &7";
+		String d = "&c&lUResidence &8&l» &7";
 		if(args.length==0) {
 			TheAPI.msg("&8&l»------ &c&lUltimateResidence &8&l«------", s);
 			TheAPI.msg(d+"&e/Residence create [name]", s); //done
@@ -69,11 +69,12 @@ public class URCMD implements CommandExecutor {
 					TheAPI.msg(d+"&e/Residence list [user]", s);
 					return true;
 				}
-				for(String res : ResidenceAPI.getResidences(((Player)s).getWorld(), s.getName()))
+				for(String res : ResidenceAPI.getResidences(s.getName()))
 				TheAPI.getStringUtils().getHoverMessage("&7- ")
 				.addText("&6"+res)
 				.setHoverEvent("&7Click to teleport")
 				.setClickEvent(ClickAction.RUN_COMMAND, "/Residence teleport "+res)
+				.addText("&7 ("+ResidenceAPI.getResidence(res).getWorld().getName()+")")
 				.send((Player)s);
 			return true;
 			}
@@ -88,7 +89,7 @@ public class URCMD implements CommandExecutor {
 				.addText("&6"+res)
 				.setHoverEvent("&7Click to teleport")
 				.setClickEvent(ClickAction.RUN_COMMAND, "/Residence teleport "+res)
-				.addText(" &7("+ResidenceAPI.getResidence(res).getWorld().getName()+")")
+				.addText("&7 ("+ResidenceAPI.getResidence(res).getWorld().getName()+")")
 				.send((Player)s);
 			return true;
 		}

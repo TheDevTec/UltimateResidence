@@ -117,7 +117,7 @@ public class ResidenceAPI {
 	public static List<String> getResidences(String owner) {
 		List<String> a = new ArrayList<String>();
 		for(World w : Bukkit.getWorlds()) 
-		if(Loader.getData(w)!=null)
+			if(Loader.getData(w) != null && Loader.getData(w).getConfig().getString("Residence."+owner) != null)
 		for(String s: Loader.getData(w).getConfig().getConfigurationSection("Residence."+owner).getKeys(false))a.add(s);
 		return a;
 	}
