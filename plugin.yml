@@ -1,0 +1,9 @@
+name: UltimateResidence
+main: me.DevTec.UltimateResidence.Loader
+version: 1.0
+author: DevTec
+depend: [TheAPI]
+commands:
+  UltimateResidence:
+    aliases: [us,res,residence,ures,uresidence]
+    usage: /<command>
