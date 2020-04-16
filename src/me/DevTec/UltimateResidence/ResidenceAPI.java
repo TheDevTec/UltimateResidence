@@ -72,15 +72,7 @@ public class ResidenceAPI {
 	}
 	
 	public static Residence getResidence(Player player) {
-		String find = null;
-		for(String s : getResidences(player.getWorld())) {
-			if(getResidence(s)!=null)
-			if(getResidence(s).inResidence(player)) {
-				find= s;
-				break;
-			}
-		}
-		return getResidence(find);
+		return getResidence(player.getLocation());
 	}
 
 	private static List<String> getResidences(World world) {
@@ -132,6 +124,18 @@ public class ResidenceAPI {
 			}
 		}
 		return is;
+	}
+
+	public static Residence getResidence(Location location) {
+		String find = null;
+		for(String s : getResidences(location.getWorld())) {
+			if(getResidence(s)!=null)
+			if(getResidence(s).inResidence(location)) {
+				find= s;
+				break;
+			}
+		}
+		return getResidence(find);
 	}
 
 }

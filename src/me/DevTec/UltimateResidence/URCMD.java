@@ -45,7 +45,7 @@ public class URCMD implements CommandExecutor {
 			TheAPI.msg(d+"Maximum members: &a100", s);
 			return true;
 		}
-		if(args[0].equalsIgnoreCase("teleport")) {
+		if(args[0].equalsIgnoreCase("teleport")||args[0].equalsIgnoreCase("tp")) {
 			if(!(s instanceof Player)) {
 				TheAPI.msg(d+"&cThis command is available only for players", s);
 				return true;
@@ -69,6 +69,7 @@ public class URCMD implements CommandExecutor {
 					TheAPI.msg(d+"&e/Residence list [user]", s);
 					return true;
 				}
+				TheAPI.msg("&8&l»------ &cResidences of user "+s.getName()+" &8&l«------", s);
 				for(String res : ResidenceAPI.getResidences(s.getName()))
 				TheAPI.getStringUtils().getHoverMessage("&7- ")
 				.addText("&6"+res)
@@ -78,13 +79,13 @@ public class URCMD implements CommandExecutor {
 				.send((Player)s);
 			return true;
 			}
+			TheAPI.msg("&8&l»------ &cResidences of user "+args[1]+" &8&l«------", s);
 			if(!(s instanceof Player)) {
-				TheAPI.msg("&8&l»------ &cResidences of user "+args[1]+" &8&l«------", s);
 				for(String res : ResidenceAPI.getResidences(args[1]))
 					TheAPI.msg("&7- &6"+res+" &7("+ResidenceAPI.getResidence(res).getWorld().getName()+")",s);
 				return true;
 			}
-			for(String res : ResidenceAPI.getResidences(s.getName()))
+			for(String res : ResidenceAPI.getResidences(args[1]))
 				TheAPI.getStringUtils().getHoverMessage("&7- ")
 				.addText("&6"+res)
 				.setHoverEvent("&7Click to teleport")

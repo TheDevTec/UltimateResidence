@@ -16,13 +16,13 @@ import me.Straiker123.TheRunnable;
 public class Loader extends JavaPlugin {
 	public static boolean loaded;
 	public static HashMap<String,Residence> map = new HashMap<String,Residence>();
-	public static ConfigAPI c = new ConfigAPI("UtlimateResidence", "Config");
+	public static ConfigAPI c = new ConfigAPI("UltimateResidence", "Config");
 	public static ResidenceAPI api;
 	public static TheRunnable r=new TheRunnable();
 	public static HashMap<World, ConfigAPI> a = new HashMap<World, ConfigAPI>();
 	public void onEnable() {
 		for(World w : Bukkit.getWorlds()) {
-			ConfigAPI config = new ConfigAPI("UtlimateResidence/Data",w.getName());
+			ConfigAPI config = new ConfigAPI("UltimateResidence/Data",w.getName());
 			config.create();
 			a.put(w, config);
 		}
