@@ -40,17 +40,19 @@ public class Loader extends JavaPlugin {
 						if(in.containsKey(p) && !in.get(p).equals(r)) {
 							ResidenceEnterEvent e = new ResidenceEnterEvent(r,p);
 							Bukkit.getPluginManager().callEvent(e);
-							if(e.getTitle()!=null) {
+							if(e.getTitle()!=null)
 								p.sendTitle(TheAPI.colorize(e.getTitle()[0]), TheAPI.colorize(e.getTitle()[1]));
-							}
+							if(e.getActionBar()!=null) 
+								TheAPI.sendActionBar(p, e.getActionBar());
 							in.put(p, r);
 						}else
 							if(!in.containsKey(p)) {
 								ResidenceEnterEvent e = new ResidenceEnterEvent(r,p);
 								Bukkit.getPluginManager().callEvent(e);
-								if(e.getTitle()!=null) {
+								if(e.getTitle()!=null)
 									p.sendTitle(TheAPI.colorize(e.getTitle()[0]), TheAPI.colorize(e.getTitle()[1]));
-								}
+								if(e.getActionBar()!=null) 
+									TheAPI.sendActionBar(p, e.getActionBar());
 						in.put(p, r);
 							}
 						for(ResidenceFlag f : r.getFlags()) {
@@ -71,9 +73,10 @@ public class Loader extends JavaPlugin {
 						if(in.containsKey(p)) {
 						ResidenceLeaveEvent e = new ResidenceLeaveEvent(in.get(p),p);
 						Bukkit.getPluginManager().callEvent(e);
-						if(e.getTitle()!=null) {
+						if(e.getTitle()!=null)
 							p.sendTitle(TheAPI.colorize(e.getTitle()[0]), TheAPI.colorize(e.getTitle()[1]));
-						}
+						if(e.getActionBar()!=null) 
+							TheAPI.sendActionBar(p, e.getActionBar());
 						in.remove(p);
 						}
 					}

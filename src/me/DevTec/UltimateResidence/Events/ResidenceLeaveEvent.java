@@ -9,11 +9,11 @@ import me.DevTec.UltimateResidence.Residence;
 public class ResidenceLeaveEvent extends Event {
 	private Player s;
 	private Residence r;
+	private String ac;
 	private String[] title;
 	public ResidenceLeaveEvent(Residence r, Player s) {
 		this.s=s;
 		this.r=r;
-		setTitle("&7You are leaving","&7Residence &a"+r.getName());
 	}
 	
 	public void setTitle(String a, String b) {
@@ -23,6 +23,14 @@ public class ResidenceLeaveEvent extends Event {
 	
 	public String[] getTitle() {
 		return title;
+	}
+	
+	public void setActionBar(String a) {
+		ac=a;
+	}
+	
+	public String getActionBar() {
+		return ac;
 	}
 	
 	public Residence getResidence() {
