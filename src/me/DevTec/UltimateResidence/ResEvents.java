@@ -2,6 +2,7 @@ package me.DevTec.UltimateResidence;
 
 import java.util.HashMap;
 
+import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.entity.EntityType;
@@ -17,9 +18,12 @@ import org.bukkit.event.entity.EntityDamageEvent;
 import org.bukkit.event.entity.EntityDamageEvent.DamageCause;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.event.player.PlayerItemDamageEvent;
+import org.bukkit.event.player.PlayerMoveEvent;
 import org.bukkit.event.player.PlayerToggleFlightEvent;
 
-import me.DevTec.UltimateResidence.ResidenceFlag.ResidenceFlagType;
+import me.DevTec.UltimateResidence.Events.ResidenceEnterEvent;
+import me.DevTec.UltimateResidence.Events.ResidenceLeaveEvent;
+import me.DevTec.UltimateResidence.ResidenceFlag.Flag;
 import me.Straiker123.TheAPI;
 
 public class ResEvents implements Listener {
@@ -31,7 +35,7 @@ public class ResEvents implements Listener {
 		if(e.getBlock().getType().name().contains("ANVIL")) {
 		Residence r= ResidenceAPI.getResidence(e.getBlock().getLocation());
 		if(r!= null)
-				if(r.getFlag(ResidenceFlagType.ANVILBREAK)) { //only global.
+				if(r.getFlag(Flag.ANVILBREAK)) { //only global.
 					e.setCancelled(true);
 					return;
 				}else {
@@ -45,7 +49,7 @@ public class ResEvents implements Listener {
 		Residence r= ResidenceAPI.getResidence(s.getLocation());
 		if(r!= null)
 			if(r.getOwner().equals(s.getName())|| r.getMembers().contains(s.getName())) {
-				if(r.getFlag(ResidenceFlagType.NODURABILITY)|| r.getFlag(s,ResidenceFlagType.NODURABILITY)) {
+				if(r.getFlag(Flag.NODURABILITY)|| r.getPlayerFlag(Flag.NODURABILITY,s.getName())) {
 					e.setCancelled(true);
 					return;
 				}else {
@@ -61,7 +65,7 @@ public class ResEvents implements Listener {
 	if(r!= null)
 		if(e.isFlying())
 		if(r.getOwner().equals(s.getName())|| r.getMembers().contains(s.getName())) {
-			if(r.getFlag(ResidenceFlagType.FLY)|| r.getFlag(s,ResidenceFlagType.FLY)) {
+			if(r.getFlag(Flag.FLY)|| r.getPlayerFlag(Flag.FLY,s.getName())) {
 				return;
 			}else {
 				e.setCancelled(true);
@@ -99,7 +103,7 @@ public class ResEvents implements Listener {
 					if(r!= null)
 						if(r.getOwner().equals(s.getName()) ||  r.getMembers().contains(s.getName())) {
 							if(e.getClickedBlock().getType().name().contains("DOOR"))
-								if(r.getFlag(ResidenceFlagType.DOOR)|| r.getFlag(s,ResidenceFlagType.DOOR)) {
+								if(r.getFlag(Flag.DOOR)|| r.getPlayerFlag(Flag.DOOR,s.getName())) {
 									return;
 								}else {
 									e.setCancelled(true);
@@ -107,7 +111,7 @@ public class ResEvents implements Listener {
 								}
 
 								if(e.getClickedBlock().getType().name().contains("WORKBENCH"))
-									if(r.getFlag(ResidenceFlagType.WORKBENCH)|| r.getFlag(s,ResidenceFlagType.WORKBENCH)) {
+									if(r.getFlag(Flag.WORKBENCH)|| r.getPlayerFlag(Flag.WORKBENCH,s.getName())) {
 										return;
 									}else {
 										e.setCancelled(true);
@@ -115,14 +119,14 @@ public class ResEvents implements Listener {
 									}
 
 								if(e.getClickedBlock().getType().name().contains("ANVIL"))
-									if(r.getFlag(ResidenceFlagType.ANVIL)|| r.getFlag(s,ResidenceFlagType.ANVIL)) {
+									if(r.getFlag(Flag.ANVIL)|| r.getPlayerFlag(Flag.ANVIL,s.getName())) {
 										return;
 									}else {
 										e.setCancelled(true);
 										return;
 									}
 								
-								if(r.getFlag(ResidenceFlagType.USE)|| r.getFlag(s,ResidenceFlagType.USE))
+								if(r.getFlag(Flag.USE)|| r.getPlayerFlag(Flag.USE,s.getName()))
 									return;
 								e.setCancelled(true);
 								return;
@@ -135,6 +139,63 @@ public class ResEvents implements Listener {
 				||s.contains("PARROT")||s.contains("BEAR")||s.contains("RABBIT")||s.contains("SHEEP")||s.contains("SQUIT")
 				||s.contains("VILLAGER")||s.contains("WOLF");
 	}
+
+	HashMap<Player, Residence> in = new HashMap<Player, Residence>();
+	@SuppressWarnings("deprecation")
+	@EventHandler
+	public void onMove(PlayerMoveEvent e) {
+		if(e.getTo().getBlockX() > e.getFrom().getBlockX()|| e.getTo().getBlockZ() > e.getFrom().getBlockZ() ||e.getTo().getBlockY() > e.getFrom().getBlockY()) {
+		Player p = e.getPlayer();
+		Residence r = ResidenceAPI.getResidence(e.getTo());
+		if(r!=null && e.isCancelled()==false) {
+			if(in.containsKey(p) && !in.get(p).equals(r)) {
+				ResidenceEnterEvent es = new ResidenceEnterEvent(r,p);
+				Bukkit.getPluginManager().callEvent(es);
+				if(es.isCancelled()||r.getFlag(Flag.MOVE)) {
+					e.setCancelled(true);
+					return;
+				}
+				if(es.getTitle()!=null)
+					TheAPI.getPlayerAPI(p).sendTitle(TheAPI.colorize(es.getTitle()[0]), TheAPI.colorize(es.getTitle()[1]));
+				if(es.getActionBar()!=null) 
+					TheAPI.sendActionBar(p, es.getActionBar());
+				in.put(p, r);
+			}else
+				if(!in.containsKey(p)) {
+					ResidenceEnterEvent es = new ResidenceEnterEvent(r,p);
+					Bukkit.getPluginManager().callEvent(es);
+					if(es.getTitle()!=null)
+						TheAPI.getPlayerAPI(p).sendTitle(TheAPI.colorize(es.getTitle()[0]), TheAPI.colorize(es.getTitle()[1]));
+					if(es.getActionBar()!=null) 
+						TheAPI.sendActionBar(p, es.getActionBar());
+			in.put(p, r);
+				}
+			for(ResidenceFlag f : r.getFlags()) {
+				switch(f.getFlag()) {
+				case HEAL:
+					if(p.getHealth() !=p.getMaxHealth())
+					p.setHealth((p.getHealth()+2) > p.getMaxHealth() ? p.getHealth()+2 : p.getMaxHealth());
+					break;
+				case FEED:
+					if(p.getFoodLevel() !=20)
+					p.setFoodLevel((p.getFoodLevel()+2) > 20 ? p.getFoodLevel()+2 : 20);
+					break;
+					default:
+						break;
+				}
+			}
+		}else {
+			if(in.containsKey(p)) {
+			ResidenceLeaveEvent es = new ResidenceLeaveEvent(in.get(p),e.getFrom(),p);
+			Bukkit.getPluginManager().callEvent(es);
+			if(es.getTitle()!=null)
+				p.sendTitle(TheAPI.colorize(es.getTitle()[0]), TheAPI.colorize(es.getTitle()[1]));
+			if(es.getActionBar()!=null) 
+				TheAPI.sendActionBar(p, es.getActionBar());
+			in.remove(p);
+			}
+		}
+	}}
 	
 	@EventHandler
 	public void onDamage(EntityDamageByEntityEvent e) {
@@ -144,9 +205,9 @@ public class ResEvents implements Listener {
 		Residence r= ResidenceAPI.getResidence(e.getEntity().getLocation());
 		if(r!= null)
 			if(r.getOwner().equals(s.getName()) || r.getMembers().contains(s.getName())) {
-				ResidenceFlagType f = e.getEntityType()==EntityType.PLAYER ? ResidenceFlagType.PVP : 
-					(isMob(e.getEntityType().name()) ? ResidenceFlagType.ANIMALKILL:ResidenceFlagType.MONSTERKILL);
-				if(r.getFlag(f)|| r.getFlag(s,f)) {
+				Flag f = e.getEntityType()==EntityType.PLAYER ? Flag.PVP : 
+					(isMob(e.getEntityType().name()) ? Flag.ANIMALKILL:Flag.MONSTERKILL);
+				if(r.getFlag(f)|| r.getPlayerFlag(f,s.getName())) {
 					return;
 				}else {
 					e.setCancelled(true);
@@ -160,7 +221,7 @@ public class ResEvents implements Listener {
 		Residence r= ResidenceAPI.getResidence(e.getBlock().getLocation());
 		if(r!= null)
 			if(r.getOwner().equals(s.getName())|| r.getMembers().contains(s.getName())) {
-				if(r.getFlag(ResidenceFlagType.BREAK)|| r.getFlag(s,ResidenceFlagType.BREAK)) {
+				if(r.getFlag(Flag.BREAK)|| r.getPlayerFlag(Flag.BREAK,s.getName())) {
 					return;
 				}else {
 					e.setCancelled(true);
@@ -176,14 +237,14 @@ public class ResEvents implements Listener {
 		if(r!= null)
 			if(r.getOwner().equals(s.getName()) || r.getMembers().contains(s.getName())) {
 				if(e.getCause()==DamageCause.FALL)
-				if(r.getFlag(ResidenceFlagType.NOFALLDAMAGE)|| r.getFlag(s,ResidenceFlagType.NOFALLDAMAGE)) {
+				if(r.getFlag(Flag.NOFALLDAMAGE)|| r.getPlayerFlag(Flag.NOFALLDAMAGE,s.getName())) {
 					e.setCancelled(true);
 					return;
 				}else {
 					return;
 				}
 
-				if(r.getFlag(ResidenceFlagType.NODAMAGE)|| r.getFlag(s,ResidenceFlagType.NODAMAGE)) {
+				if(r.getFlag(Flag.NODAMAGE)|| r.getPlayerFlag(Flag.NODAMAGE,s.getName())) {
 					e.setCancelled(true);
 					return;
 				}
@@ -196,7 +257,7 @@ public class ResEvents implements Listener {
 		Residence r= ResidenceAPI.getResidence(e.getBlock().getLocation());
 		if(r!= null)
 			if(r.getOwner().equals(s.getName()) || r.getMembers().contains(s.getName())) {
-				if(r.getFlag(ResidenceFlagType.BUILD)|| r.getFlag(s,ResidenceFlagType.BUILD)) {
+				if(r.getFlag(Flag.BUILD)|| r.getPlayerFlag(Flag.BUILD,s.getName())) {
 					return;
 				}else {
 					e.setCancelled(true);

@@ -9,7 +9,7 @@ import org.bukkit.Location;
 import org.bukkit.World;
 import org.bukkit.entity.Player;
 
-import me.DevTec.UltimateResidence.ResidenceFlag.ResidenceFlagType;
+import me.DevTec.UltimateResidence.ResidenceFlag.Flag;
 import me.Straiker123.TheAPI;
 
 public class Residence {
@@ -129,48 +129,63 @@ public class Residence {
 	public Location[] getCorners() {
 		return new Location[]{l1,l2};
 	}
-	
+
+	public boolean getFlag(Flag f){
+		boolean fr = false;
+		for(ResidenceFlag a : getFlags()) {
+			if(a.getFlag()==f) {
+				fr=a.getValue();
+				break;
+			}
+		}
+		return fr;
+	}
+
+	public boolean getPlayerFlag(Flag f, String player){
+		boolean fr = false;
+		for(ResidenceFlag a : getPlayerFlags()) {
+			if(a.getFlag()==f && a.getPlayer().equals(player)) {
+				fr=a.getValue();
+				break;
+			}
+		}
+		return fr;
+	}
+
 	public List<ResidenceFlag> getFlags(){
 		List<ResidenceFlag> a = new ArrayList<ResidenceFlag>();
 		for(String s : Loader.getData(world).getConfig().getStringList("Residence."+owner+"."+name+".Flags-Global")){
 			String[] f = s.split(":");
-			a.add(new ResidenceFlag(null,ResidenceFlagType.valueOf(f[0]),Boolean.valueOf(f[1])));
+			a.add(new ResidenceFlag(null,Flag.valueOf(f[0]),Boolean.valueOf(f[1])));
 		}
 		for(String s : Loader.getData(world).getConfig().getStringList("Residence."+owner+"."+name+".Flags-Player")) {
 			String[] f = s.split(":");
-			a.add(new ResidenceFlag(f[0],ResidenceFlagType.valueOf(f[1]),Boolean.valueOf(f[2])));
+			a.add(new ResidenceFlag(f[0],Flag.valueOf(f[1]),Boolean.valueOf(f[2])));
 		}
 		return a;
 	}
 
-	public void setFlag(ResidenceFlag flag) {
-		if(flag.getPlayer() != null) {
-			List<String> a = Loader.getData(world).getConfig().getStringList("Residence."+owner+"."+name+".Flags-Player");
-			a.add(flag.getPlayer()+":"+flag.getType().name()+":"+flag.getValue());
-			Loader.getData(world).getConfig().set("Residence."+owner+"."+name+".Flags-Player",a);
-			Loader.getData(world).save();
-		}else {
+	public List<ResidenceFlag> getPlayerFlags(){
+		List<ResidenceFlag> a = new ArrayList<ResidenceFlag>();
+		for(String s : Loader.getData(world).getConfig().getStringList("Residence."+owner+"."+name+".Flags-Player")) {
+			String[] f = s.split(":");
+			a.add(new ResidenceFlag(f[0],Flag.valueOf(f[1]),Boolean.valueOf(f[2])));
+		}
+		return a;
+	}
+	
+	public void setFlag(Flag flag, boolean value) {
 			List<String> a = Loader.getData(world).getConfig().getStringList("Residence."+owner+"."+name+".Flags-Global");
-			a.add(flag.getType().name()+":"+flag.getValue());
+			a.add(flag.name()+":"+value);
 			Loader.getData(world).getConfig().set("Residence."+owner+"."+name+".Flags-Global",a);
 			Loader.getData(world).save();
-		}
 	}
-
-	public void setFlag(String name, boolean value) {
-		setFlag(new ResidenceFlag(null,ResidenceFlagType.valueOf(name.toUpperCase()),value));
-	}
-
-	public void setFlag(String player, String name, boolean value) {
-		setFlag(new ResidenceFlag(player,ResidenceFlagType.valueOf(name.toUpperCase()),value));
-	}
-
-	public void setFlag(ResidenceFlagType name, boolean value) {
-		setFlag(new ResidenceFlag(null,name,value));
-	}
-
-	public void setFlag(String player, ResidenceFlagType name, boolean value) {
-		setFlag(new ResidenceFlag(player,name,value));
+	
+	public void setFlag(Flag flag, String player, boolean value) {
+			List<String> a = Loader.getData(world).getConfig().getStringList("Residence."+owner+"."+name+".Flags-Player");
+			a.add(player+":"+flag.name()+":"+value);
+			Loader.getData(world).getConfig().set("Residence."+owner+"."+name+".Flags-Player",a);
+			Loader.getData(world).save();
 	}
 	
 	public boolean inResidence(Location location){
@@ -181,28 +196,6 @@ public class Residence {
 
 	public boolean inResidence(Player player){
 		return inResidence(player.getLocation());
-	}
-
-	public boolean getFlag(Player s, ResidenceFlagType flag) {
-		boolean a = false;
-		for(ResidenceFlag f : getFlags()) {
-			if(f.getType()==flag && f.getPlayer().equals(s.getName())) {
-				a=f.getValue();
-				break;
-			}
-		}
-		return a;
-	}
-
-	public boolean getFlag(ResidenceFlagType flag) {
-		boolean a = false;
-		for(ResidenceFlag f : getFlags()) {
-			if(f.getType()==flag && f.getPlayer()==null) {
-				a=f.getValue();
-				break;
-			}
-		}
-		return a;
 	}
 
 }

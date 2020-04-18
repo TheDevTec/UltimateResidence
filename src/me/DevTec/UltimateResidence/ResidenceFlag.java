@@ -4,7 +4,7 @@ import org.bukkit.craftbukkit.libs.jline.internal.Nullable;
 
 public class ResidenceFlag {
 	
-	public static enum ResidenceFlagType {
+	public static enum Flag {
 		MOVE,
 		PVP,
 		FEED,
@@ -21,16 +21,16 @@ public class ResidenceFlag {
 		BREAK, NODAMAGE, NOFALLDAMAGE
 	}
 	
-	private ResidenceFlagType s;
+	private Flag s;
 	private String g;
 	private boolean b;
-	public ResidenceFlag(String player, ResidenceFlagType name, boolean value) {
+	public ResidenceFlag(String player, Flag name, boolean value) {
 		s=name;
 		g=player;
 		b=value;
 	}
 
-	public ResidenceFlagType getType() {
+	public Flag getFlag() {
 		return s;
 	}
 	
