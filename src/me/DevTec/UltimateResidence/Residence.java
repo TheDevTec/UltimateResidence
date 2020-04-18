@@ -3,7 +3,6 @@ package me.DevTec.UltimateResidence;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.apache.commons.lang.math.IntRange;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.World;
@@ -180,15 +179,13 @@ public class Residence {
 			Loader.getData(world).getConfig().set("Residence."+owner+"."+name+".Flags-Player",a);
 			Loader.getData(world).save();
 	}
-	
-	public boolean inResidence(Location location){
-        return new IntRange(l1.getX(), l2.getX()).containsDouble(location.getX())
-                && new IntRange(l1.getY(), l2.getY()).containsDouble(location.getY())
-                &&  new IntRange(l1.getZ(), l2.getZ()).containsDouble(location.getZ());
-    }
 
 	public boolean inResidence(Player player){
-		return inResidence(player.getLocation());
+		return TheAPI.getBlocksAPI().isInside(player.getLocation(),l1,l2);
+	}
+
+	public boolean inResidence(Location loc){
+		return TheAPI.getBlocksAPI().isInside(loc,l1,l2);
 	}
 
 }
