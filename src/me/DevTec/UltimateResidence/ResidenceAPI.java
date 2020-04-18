@@ -9,6 +9,7 @@ import org.bukkit.Location;
 import org.bukkit.World;
 import org.bukkit.entity.Player;
 
+import me.DevTec.UltimateResidence.Group.SizeType;
 import me.Straiker123.BlocksAPI;
 import me.Straiker123.ConfigAPI;
 import me.Straiker123.TheAPI;
@@ -37,6 +38,9 @@ public class ResidenceAPI {
 	public void unload() {
 		Loader.loaded=false;
 		Loader.map.clear();
+		for(World w : Bukkit.getWorlds()) {
+			Loader.getData(w).save();
+		}
 		TheAPI.msg("&c&lUltimateResidence &8&l» &7Residence unloaded. Goodbye!", TheAPI.getConsole());
 	}
 	
@@ -47,11 +51,6 @@ public class ResidenceAPI {
 			Loader.getData(w).reload();
 		Loader.a.clear();
 		Loader.c.reload();
-		for(World w : Bukkit.getWorlds()) {
-			ConfigAPI config = new ConfigAPI("UtlimateResidence/Data",w.getName());
-			config.create();
-			Loader.a.put(w, config);
-		}
 		unload();
 		load();
 	}
@@ -63,12 +62,7 @@ public class ResidenceAPI {
 	}
 	
 	public static List<String> getResidences(World world, String player){
-		List<String> a = new ArrayList<String>();
-		if(Loader.getData(world).getConfig().getString("Residence."+player) != null)
-		for(String s: Loader.getData(world).getConfig().getConfigurationSection("Residence."+player).getKeys(false)) {
-			a.add(s);
-		}
-		return a;
+		return getData(player).getResidences(world.getName());
 	}
 	
 	public static Residence getResidence(Player player) {
@@ -86,32 +80,41 @@ public class ResidenceAPI {
 	}
 
 	public static void createResidence(World world, String owner,String res) {
-		Loader.getData(world).getConfig().set("Residence."+owner+"."+res+".Corners", 
+		ConfigAPI a = Loader.getData(world);
+		a.getConfig().set("Residence."+owner+"."+res+".Corners", 
 				TheAPI.getStringUtils().getLocationAsString(ResEvents.locs.get(owner)[0])+":"+
 				TheAPI.getStringUtils().getLocationAsString(ResEvents.locs.get(owner)[1]));
-		Loader.getData(world).getConfig().set("Residence."+owner+"."+res+".Members", Arrays.asList(owner));
-		Loader.getData(world).getConfig().set("Residence."+owner+"."+res+".Limit.Size", "50x50");
-		Loader.getData(world).getConfig().set("Residence."+owner+"."+res+".Limit.Members", 100);
-		Loader.getData(world).getConfig().set("Residence."+owner+"."+res+".Limit.Residences", 5);
-		Loader.getData(world).getConfig().set("Residence."+owner+"."+res+".Limit.Subzones", 3);
-		Loader.getData(world).getConfig().set("Residence."+owner+"."+res+".Tp"
+		a.getConfig().set("Residence."+owner+"."+res+".Members", Arrays.asList(owner));
+		a.getConfig().set("Residence."+owner+"."+res+".Limit.Size", getData(owner).getGroup().getMaxSize(SizeType.X)+"x"+
+				getData(owner).getGroup().getMaxSize(SizeType.Z));
+		a.getConfig().set("Residence."+owner+"."+res+".Limit.Members", 100);
+		a.getConfig().set("Residence."+owner+"."+res+".Limit.Residences", getData(owner).getGroup().getMaxResidences());
+		a.getConfig().set("Residence."+owner+"."+res+".Limit.Subzones", getData(owner).getGroup().getMaxSubResidences());
+		a.getConfig().set("Residence."+owner+"."+res+".Tp"
 				,TheAPI.getStringUtils().getLocationAsString(Bukkit.getPlayer(owner).getLocation()));
-		Loader.getData(world).save();
-		Loader.map.put(res, new Residence(res, world, owner));
+		Residence r = new Residence(res, world, owner);
+		Loader.map.put(res, r);
+		getData(owner).addResidence(r);
+	}
+	
+	public static boolean isTooBigSize(String player, Location l1, Location l2) {
+		int x = Math.max(l1.getBlockX(), l2.getBlockX()) - Math.min(l1.getBlockX(), l2.getBlockX()) + 1;
+		int z = Math.max(l1.getBlockZ(), l2.getBlockZ())-Math.min(l1.getBlockZ(), l2.getBlockZ())+1;
+		return getData(player).getGroup().getMaxSize(SizeType.X) < x||getData(player).getGroup().getMaxSize(SizeType.X) < z;
+	}
+
+	public static Data getData(String player) {
+		return new Data(player);
 	}
 
 	public static void deleteResidence(World world, String owner,String res) {
+		getData(owner).removeResidence(getResidence(res));
 		Loader.getData(world).getConfig().set("Residence."+owner+"."+res,null);
-		Loader.getData(world).save();
 		Loader.map.remove(res);
 	}
 
 	public static List<String> getResidences(String owner) {
-		List<String> a = new ArrayList<String>();
-		for(World w : Bukkit.getWorlds()) 
-			if(Loader.getData(w) != null && Loader.getData(w).getConfig().getString("Residence."+owner) != null)
-		for(String s: Loader.getData(w).getConfig().getConfigurationSection("Residence."+owner).getKeys(false))a.add(s);
-		return a;
+		return getData(owner).getResidences();
 	}
 
 	public static boolean isColliding(World world, Location x,Location z) {

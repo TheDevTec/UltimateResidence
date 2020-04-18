@@ -21,20 +21,23 @@ public class URCMD implements CommandExecutor {
 			TheAPI.msg(d+"&e/Residence info [residence]", s); //done
 			TheAPI.msg(d+"&e/Residence limits", s); //done
 			TheAPI.msg(d+"&e/Residence list [user]", s); //done
-			if(s.hasPermission("residence.reload"))
+			if(ad.has(s,"residence.reload"))
 			TheAPI.msg(d+"&e/Residence reload", s); //done
 			TheAPI.msg("&8&l»------ &c&lUltimateResidence &8&l«------", s);
 			return true;
 		}
 		if(args[0].equalsIgnoreCase("reload")) {
-			if(s.hasPermission("residence.reload")) {
+			if(!ad.has(s,"residence.reload")) {
+				return true;
+			}
 				Loader.api.reload();
 				TheAPI.msg(d+"Plugin reloaded.", s);
 				return true;
-			}
-			return true;
 		}
 		if(args[0].equalsIgnoreCase("limits")) {
+			if(!ad.has(s,"residence.limits")) {
+				return true;
+			}
 			if(!(s instanceof Player)) {
 				TheAPI.msg(d+"&cThis command is available only for players", s);
 				return true;
@@ -46,6 +49,9 @@ public class URCMD implements CommandExecutor {
 			return true;
 		}
 		if(args[0].equalsIgnoreCase("teleport")||args[0].equalsIgnoreCase("tp")) {
+			if(!ad.has(s,"residence.teleport")) {
+				return true;
+			}
 			if(!(s instanceof Player)) {
 				TheAPI.msg(d+"&cThis command is available only for players", s);
 				return true;
@@ -64,6 +70,9 @@ public class URCMD implements CommandExecutor {
 			return true;
 		}
 		if(args[0].equalsIgnoreCase("list")) {
+			if(!ad.has(s,"residence.list")) {
+				return true;
+			}
 			if(args.length==1) {
 				if(!(s instanceof Player)) {
 					TheAPI.msg(d+"&e/Residence list [user]", s);
@@ -95,6 +104,9 @@ public class URCMD implements CommandExecutor {
 			return true;
 		}
 		if(args[0].equalsIgnoreCase("create")) {
+			if(!ad.has(s,"residence.create")) {
+				return true;
+			}
 			if(!(s instanceof Player)) {
 				TheAPI.msg("&8&l»------ &cResidences of user "+args[1]+" &8&l«------", s);
 				for(String res : ResidenceAPI.getResidences(args[1]))
@@ -120,6 +132,9 @@ public class URCMD implements CommandExecutor {
 			return true;
 		}
 		if(args[0].equalsIgnoreCase("delete")) {
+			if(!ad.has(s,"residence.create")) {
+				return true;
+			}
 			if(args.length==1) {
 			TheAPI.msg(d+"&e/Residence delete [name]", s);
 			return true;

@@ -24,8 +24,8 @@ public class Residence {
 		String[] sd = Loader.getData(w).getConfig().getString("Residence."+owner+"."+name+".Corners").split(":");
 		l1=TheAPI.getStringUtils().getLocationFromString(sd[0]);
 		l2=TheAPI.getStringUtils().getLocationFromString(sd[1]);
-		 x = Math.max(l1.getBlockX(), l2.getBlockX()) - Math.min(l1.getBlockX(), l2.getBlockX()) + 1;
-	     z = Math.max(l1.getBlockZ(), l2.getBlockZ())-Math.min(l1.getBlockZ(), l2.getBlockZ())+1;
+		x = Math.max(l1.getBlockX(), l2.getBlockX()) - Math.min(l1.getBlockX(), l2.getBlockX()) + 1;
+	    z = Math.max(l1.getBlockZ(), l2.getBlockZ())-Math.min(l1.getBlockZ(), l2.getBlockZ())+1;
 	}
 
 	public boolean isMember(String player) {
@@ -46,7 +46,6 @@ public class Residence {
 	
 	public void setMaximumMembers(int value) {
 		Loader.getData(world).getConfig().set("Residence."+owner+"."+name+".Limit.Members",value);
-		Loader.getData(world).save();
 	}
 
 	/**
@@ -70,7 +69,6 @@ public class Residence {
 
 	public void setMaximumSize(int x, int z) {
 		Loader.getData(world).getConfig().set("Residence."+owner+"."+name+".Limit.Size",x+"x"+z);
-		Loader.getData(world).save();
 	}
 	
 	public int getMaximumSubzones() {
@@ -79,19 +77,16 @@ public class Residence {
 
 	public void setMaximumSubzones(int value) {
 		Loader.getData(world).getConfig().set("Residence."+owner+"."+name+".Limit.Subzones",value);
-		Loader.getData(world).save();
 	}
 
 	public void setMaximumSize(int[] size) {
 		if(size.length >= 1) {
 		Loader.getData(world).getConfig().set("Residence."+owner+"."+name+".Limit.Size",size[0]+"x"+size[1]);
-		Loader.getData(world).save();
 		}
 	}
 
 	public void setTeleportLocation(Location location) {
 		Loader.getData(world).getConfig().set("Residence."+owner+"."+name+".Tp",TheAPI.getStringUtils().getLocationAsString(location));
-		Loader.getData(world).save();
 	}
 
 	public Location getTeleportLocation() {
@@ -102,7 +97,6 @@ public class Residence {
 		List<String> a = getMembers();
 		a.add(player);
 		Loader.getData(world).getConfig().set("Residence."+owner+"."+name+".Members",a);
-		Loader.getData(world).save();
 	}
 	
 	public List<String> getMembers(){
@@ -178,7 +172,6 @@ public class Residence {
 			List<String> a = Loader.getData(world).getConfig().getStringList("Residence."+owner+"."+name+".Flags-Global");
 			a.add(flag.name()+":"+value);
 			Loader.getData(world).getConfig().set("Residence."+owner+"."+name+".Flags-Global",a);
-			Loader.getData(world).save();
 	}
 	
 	public void setFlag(Flag flag, String player, boolean value) {

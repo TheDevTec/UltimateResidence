@@ -18,18 +18,30 @@ import org.bukkit.event.entity.EntityDamageEvent;
 import org.bukkit.event.entity.EntityDamageEvent.DamageCause;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.event.player.PlayerItemDamageEvent;
+import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerMoveEvent;
 import org.bukkit.event.player.PlayerToggleFlightEvent;
 
+import me.DevTec.UltimateResidence.ResidenceFlag.Flag;
 import me.DevTec.UltimateResidence.Events.ResidenceEnterEvent;
 import me.DevTec.UltimateResidence.Events.ResidenceLeaveEvent;
-import me.DevTec.UltimateResidence.ResidenceFlag.Flag;
 import me.Straiker123.TheAPI;
 
 public class ResEvents implements Listener {
+	HashMap<Player, Residence> in = new HashMap<Player, Residence>();
+	HashMap<Player, Long> wait = new HashMap<Player, Long>();
 	//left,right
 	public static HashMap<String, Location[]> locs = new HashMap<String, Location[]>();
-	HashMap<Player, Long> wait = new HashMap<Player, Long>();
+	@EventHandler
+	public void onJoin(PlayerJoinEvent e) {
+		if(Loader.g.getConfig().getString("Groups")!=null)
+		for(String s: Loader.g.getConfig().getConfigurationSection("Groups").getKeys(false)) {
+			if(e.getPlayer().hasPermission("residence.group."+s)) {
+				ResidenceAPI.getData(e.getPlayer().getName()).setGroup(s);
+				break;
+			}
+		}
+	}
 	@EventHandler
 	public void onClick(BlockFadeEvent e) {
 		if(e.getBlock().getType().name().contains("ANVIL")) {
@@ -45,7 +57,7 @@ public class ResEvents implements Listener {
 	@EventHandler
 	public void onToolDamage(PlayerItemDamageEvent e) {
 		Player s = e.getPlayer();
-		if(s.hasPermission("residence.admin"))return;
+		if(ad.has(s,"residence.admin"))return;
 		Residence r= ResidenceAPI.getResidence(s.getLocation());
 		if(r!= null)
 			if(r.getOwner().equals(s.getName())|| r.getMembers().contains(s.getName())) {
@@ -60,7 +72,7 @@ public class ResEvents implements Listener {
 	@EventHandler
 	public void onFly(PlayerToggleFlightEvent e) {
 	Player s = e.getPlayer();
-	if(s.hasPermission("residence.admin"))return;
+	if(ad.has(s,"residence.admin"))return;
 	Residence r= ResidenceAPI.getResidence(s.getLocation());
 	if(r!= null)
 		if(e.isFlying())
@@ -75,6 +87,7 @@ public class ResEvents implements Listener {
 	@EventHandler
 	public void onClick(PlayerInteractEvent e) {
 		Player s = e.getPlayer();
+		if(ad.has(s,"residence.create"))
 		if(e.getItem()!=null && e.getItem().getType()==Material.STICK) {
 			e.setCancelled(true);
 			if((wait.containsKey(s)?wait.get(s):0)-System.currentTimeMillis()/1000 + 1 <= 0) {
@@ -98,7 +111,7 @@ public class ResEvents implements Listener {
 				}}
 			}else {
 				if(e.getAction()==Action.RIGHT_CLICK_BLOCK) {
-					if(s.hasPermission("residence.admin"))return;
+					if(!ad.has(s,"residence.create"))return;
 					Residence r= ResidenceAPI.getResidence(e.getClickedBlock().getLocation());
 					if(r!= null)
 						if(r.getOwner().equals(s.getName()) ||  r.getMembers().contains(s.getName())) {
@@ -132,17 +145,12 @@ public class ResEvents implements Listener {
 								return;
 							}
 	}}}
-	
 	private boolean isMob(String s) {
 		return s.contains("PIG")||s.contains("COW")||s.contains("CHICKEN")||s.contains("OCELOT")||s.contains("CAT")
 				||s.contains("BAT")||s.contains("DONKEY")||s.contains("HORSE")||s.contains("MULE")||s.contains("LLAMA")
 				||s.contains("PARROT")||s.contains("BEAR")||s.contains("RABBIT")||s.contains("SHEEP")||s.contains("SQUIT")
 				||s.contains("VILLAGER")||s.contains("WOLF");
 	}
-
-	HashMap<Player, Residence> in = new HashMap<Player, Residence>();
-	@SuppressWarnings("deprecation")
-	@EventHandler
 	public void onMove(PlayerMoveEvent e) {
 		if(e.getTo().getBlockX() > e.getFrom().getBlockX()|| e.getTo().getBlockZ() > e.getFrom().getBlockZ() ||e.getTo().getBlockY() > e.getFrom().getBlockY()) {
 		Player p = e.getPlayer();
@@ -151,7 +159,7 @@ public class ResEvents implements Listener {
 			if(in.containsKey(p) && !in.get(p).equals(r)) {
 				ResidenceEnterEvent es = new ResidenceEnterEvent(r,p);
 				Bukkit.getPluginManager().callEvent(es);
-				if(es.isCancelled()||r.getFlag(Flag.MOVE)) {
+				if(es.isCancelled()||r.getFlag(Flag.MOVE) && !ad.has(p,"residence.admin")) {
 					e.setCancelled(true);
 					return;
 				}
@@ -170,34 +178,27 @@ public class ResEvents implements Listener {
 						TheAPI.sendActionBar(p, es.getActionBar());
 			in.put(p, r);
 				}
-			for(ResidenceFlag f : r.getFlags()) {
-				switch(f.getFlag()) {
-				case HEAL:
-					if(p.getHealth() !=p.getMaxHealth())
-					p.setHealth((p.getHealth()+2) > p.getMaxHealth() ? p.getHealth()+2 : p.getMaxHealth());
-					break;
-				case FEED:
+			if(r.getFlag(Flag.HEAL)||r.getPlayerFlag(Flag.HEAL,p.getName())) {
+					@SuppressWarnings("deprecation") double max = p.getMaxHealth();
+					if(p.getHealth() !=max)
+					p.setHealth((p.getHealth()+2) >max ? p.getHealth()+2 :max);
+			}
+			if(r.getFlag(Flag.FEED)||r.getPlayerFlag(Flag.FEED,p.getName())) {
 					if(p.getFoodLevel() !=20)
 					p.setFoodLevel((p.getFoodLevel()+2) > 20 ? p.getFoodLevel()+2 : 20);
-					break;
-					default:
-						break;
 				}
-			}
 		}else {
 			if(in.containsKey(p)) {
 			ResidenceLeaveEvent es = new ResidenceLeaveEvent(in.get(p),e.getFrom(),p);
 			Bukkit.getPluginManager().callEvent(es);
 			if(es.getTitle()!=null)
-				p.sendTitle(TheAPI.colorize(es.getTitle()[0]), TheAPI.colorize(es.getTitle()[1]));
+				TheAPI.getPlayerAPI(p).sendTitle(TheAPI.colorize(es.getTitle()[0]), TheAPI.colorize(es.getTitle()[1]));
 			if(es.getActionBar()!=null) 
 				TheAPI.sendActionBar(p, es.getActionBar());
 			in.remove(p);
 			}
 		}
 	}}
-	
-	@EventHandler
 	public void onDamage(EntityDamageByEntityEvent e) {
 		if(e.getDamager() instanceof Player) {
 		Player s = (Player)e.getDamager();
@@ -226,8 +227,7 @@ public class ResEvents implements Listener {
 				}else {
 					e.setCancelled(true);
 					return;
-				}
-			}}
+				}}}
 	@EventHandler
 	public void onGod(EntityDamageEvent e) {
 		if(e.getEntity() instanceof Player) {
