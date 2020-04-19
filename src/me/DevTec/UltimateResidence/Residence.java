@@ -188,4 +188,15 @@ public class Residence {
 		return TheAPI.getBlocksAPI().isInside(loc,l1,l2);
 	}
 
+	public List<String> getSubzones() {
+		List<String> a = new ArrayList<String>();
+		for(String s : Loader.getData(world).getConfig().getConfigurationSection("Residence."+owner+"."+name+".Subzone").getKeys(false))
+			a.add(s);
+		return a;
+	}
+
+	public Subzone getSubzone(String name) {
+		return new Subzone(this,name);
+	}
+
 }

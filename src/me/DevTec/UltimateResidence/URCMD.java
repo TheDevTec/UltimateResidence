@@ -17,6 +17,7 @@ public class URCMD implements CommandExecutor {
 			TheAPI.msg("&8&l»------ &c&lUltimateResidence &8&l«------", s);
 			TheAPI.msg(d+"&e/Residence create [name]", s); //done
 			TheAPI.msg(d+"&e/Residence delete [residence]", s); //done
+			TheAPI.msg(d+"&e/Residence subzone [name]", s); //done
 			TheAPI.msg(d+"&e/Residence teleport [residence]", s); //done
 			TheAPI.msg(d+"&e/Residence info [residence]", s); //done
 			TheAPI.msg(d+"&e/Residence limits", s); //done
@@ -108,9 +109,7 @@ public class URCMD implements CommandExecutor {
 				return true;
 			}
 			if(!(s instanceof Player)) {
-				TheAPI.msg("&8&l»------ &cResidences of user "+args[1]+" &8&l«------", s);
-				for(String res : ResidenceAPI.getResidences(args[1]))
-					TheAPI.msg("&7- &6"+res+" &7("+ResidenceAPI.getResidence(res).getWorld().getName()+")",s);
+				TheAPI.msg(d+"&cThis command is available only for players", s);
 				return true;
 			}
 			if(args.length==1) {
@@ -129,6 +128,38 @@ public class URCMD implements CommandExecutor {
 			ResidenceAPI.createResidence(((Player)s).getWorld(),s.getName(),args[1]);
 			TheAPI.msg(d+"Residence &a"+args[1]+" &7created.", s);
 			}
+			return true;
+		}
+		if(args[0].equalsIgnoreCase("subzone")) {
+			if(!ad.has(s,"residence.subzone")) {
+				return true;
+			}
+			if(!(s instanceof Player)) {
+				TheAPI.msg(d+"&cThis command is available only for players", s);
+				return true;
+			}
+			if(args.length==1) {
+			TheAPI.msg(d+"&e/Residence subzone [name]", s);
+			return true;
+			}
+			Residence r= ResidenceAPI.getResidence((Player)s);
+			if(r == null) {
+				TheAPI.msg(d+"You must be inside residence to create subonze.", s);
+				return true;
+			}
+			if(r.getSubzones().contains(args[1])) {
+				TheAPI.msg(d+"Subzone &c"+args[1]+" &7in residence &c"+r.getName()+" &7already exists.", s);
+				return true;
+			}
+			if(ResEvents.locs.containsKey(s.getName()) && ResEvents.locs.get(s.getName()).length==2) {
+			if(!ResidenceAPI.isInsideResidence(((Player)s).getWorld(),ResEvents.locs.get(s.getName())[0],ResEvents.locs.get(s.getName())[1])) {
+				TheAPI.msg(d+"Subzone &c"+args[1]+" &7isn't in residence.", s);
+				return true;
+			}
+			TheAPI.msg(d+"Subzone &a"+args[1]+" &7of residence &a"+r.getName()+" &7created.", s);
+			return true;
+			}
+			TheAPI.msg(d+"Missing courners for subzone &c"+args[1]+"&7.", s);
 			return true;
 		}
 		if(args[0].equalsIgnoreCase("delete")) {

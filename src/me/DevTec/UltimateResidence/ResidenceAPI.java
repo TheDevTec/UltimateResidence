@@ -141,4 +141,16 @@ public class ResidenceAPI {
 		return getResidence(find);
 	}
 
+	public static boolean isInsideResidence(World world, Location x, Location z) {
+		boolean is = true;
+		for(String s : getResidences(world)) {
+			for(Location l : new BlocksAPI().getBlockLocations(x, z))
+			if(!getResidence(s).inResidence(l)) {
+				is=false;
+				break;
+			}
+		}
+		return is;
+	}
+
 }
