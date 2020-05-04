@@ -5,17 +5,29 @@ import org.bukkit.event.Cancellable;
 import org.bukkit.event.Event;
 import org.bukkit.event.HandlerList;
 
-import me.DevTec.UltimateResidence.Residence;
+import me.DevTec.UltimateResidence.Loader;
+import me.DevTec.UltimateResidence.API.Residence;
+import me.DevTec.UltimateResidence.API.API;
 
 public class ResidenceEnterEvent extends Event implements Cancellable {
 	private Player s;
 	private boolean c;
 	private Residence r;
-	private String ac;
+	private String ac,chat;
 	private String[] title;
 	public ResidenceEnterEvent(Residence r, Player s) {
 		this.s=s;
 		this.r=r;
+		String group = API.getData(s.getName()).getGroup().getName();
+		if(Loader.g.getConfig().getBoolean("Groups."+group+".Chat.Use")) {
+			setChat(Loader.g.getConfig().getString("Groups."+group+".Chat.Enter"));
+		}
+		if(Loader.g.getConfig().getBoolean("Groups."+group+".Title.Use")) {
+			setTitle(Loader.g.getConfig().getString("Groups."+group+".Title.Enter.Line1"),Loader.g.getConfig().getString("Groups."+group+".Title.Enter.Line2"));
+		}
+		if(Loader.g.getConfig().getBoolean("Groups."+group+".ActionBar.Use")) {
+			setActionBar(Loader.g.getConfig().getString("Groups."+group+".ActionBar.Enter"));
+		}
 	}
 	
 	public void setTitle(String a, String b) {
@@ -25,6 +37,14 @@ public class ResidenceEnterEvent extends Event implements Cancellable {
 	
 	public void setActionBar(String a) {
 		ac=a;
+	}
+	
+	public void setChat(String a) {
+		chat=a;
+	}
+	
+	public String getChat() {
+		return chat;
 	}
 	
 	public String getActionBar() {

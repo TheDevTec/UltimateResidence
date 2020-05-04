@@ -1,56 +1,101 @@
 package me.DevTec.UltimateResidence;
 
-import java.util.HashMap;
-
 import org.bukkit.Bukkit;
 import org.bukkit.World;
+import org.bukkit.entity.Player;
 import org.bukkit.plugin.java.JavaPlugin;
 
+import me.DevTec.UltimateResidence.API.API;
+import me.DevTec.UltimateResidence.API.Data;
+import me.DevTec.UltimateResidence.Commands.URCMD;
+import me.DevTec.UltimateResidence.Utils.ResEvents;
 import me.Straiker123.ConfigAPI;
+import me.Straiker123.TheAPI;
 
 public class Loader extends JavaPlugin {
 	public static boolean loaded;
-	public static HashMap<String,Residence> map = new HashMap<String,Residence>();
 	public static ConfigAPI c = new ConfigAPI("UltimateResidence", "Config");
-	public static ResidenceAPI api;
-	public static HashMap<World, ConfigAPI> a = new HashMap<World, ConfigAPI>();
 	public static ConfigAPI g = new ConfigAPI("UltimateResidence","Groups");
 	public void onEnable() {
 		g.addDefault("Groups.default.Residences", 5);
 		g.addDefault("Groups.default.SubResidences", 3);
 		g.addDefault("Groups.default.Size", "50x50");
+		
+		g.addDefault("Groups.default.Title.Use", false);
+		g.addDefault("Groups.default.Title.Enter.Line1", "&7Welcome in residence");
+		g.addDefault("Groups.default.Title.Enter.Line2", "&a%residence&7, owned by &a%owner");
+
+		g.addDefault("Groups.default.Title.Leave.Line1", "&7Leaving residence");
+		g.addDefault("Groups.default.Title.Leave.Line2", "&a%residence");
+
+		g.addDefault("Groups.default.ActionBar.Use", true);
+		g.addDefault("Groups.default.ActionBar.Enter", "&7Welcome &a%player &7in residence &a%residence&7, owned by: &a%owner");
+		g.addDefault("Groups.default.ActionBar.Leave", "&7Leaving residence &a%residence");
+
+		g.addDefault("Groups.default.Chat.Use", false);
+		g.addDefault("Groups.default.Chat.Enter", "&7Welcome &a%player &7in residence &a%residence&7, owned by: &a%owner");
+		g.addDefault("Groups.default.Chat.Leave", "&7Leaving residence &a%residence");
 
 		g.addDefault("Groups.builder.Residences", 50);
 		g.addDefault("Groups.builder.SubResidences", 50);
 		g.addDefault("Groups.builder.Size", "500x500");
+		g.addDefault("Groups.builder.Title.Use", false);
+		g.addDefault("Groups.builder.Title.Enter.Line1", "&7Welcome in residence");
+		g.addDefault("Groups.builder.Title.Enter.Line2", "&a%residence&7, owned by &a%owner");
 
+		g.addDefault("Groups.builder.Title.Leave.Line1", "&7Leaving residence");
+		g.addDefault("Groups.builder.Title.Leave.Line2", "&a%residence");
+
+		g.addDefault("Groups.builder.ActionBar.Use", true);
+		g.addDefault("Groups.builder.ActionBar.Enter", "&7Welcome &a%player &7in residence &a%residence&7, owned by: &a%owner");
+		g.addDefault("Groups.builder.ActionBar.Leave", "&7Leaving residence &a%residence");
+
+		g.addDefault("Groups.builder.Chat.Use", false);
+		g.addDefault("Groups.builder.Chat.Enter", "&7Welcome &a%player &7in residence &a%residence&7, owned by: &a%owner");
+		g.addDefault("Groups.builder.Chat.Leave", "&7Leaving residence &a%residence");
+		
 		g.addDefault("Groups.admin.Residences", 20);
 		g.addDefault("Groups.admin.SubResidences", 20);
 		g.addDefault("Groups.admin.Size", "200x200");
+		g.addDefault("Groups.admin.Title.Use", false);
+		g.addDefault("Groups.admin.Title.Enter.Line1", "&7Welcome in residence");
+		g.addDefault("Groups.admin.Title.Enter.Line2", "&a%residence&7, owned by &a%owner");
+
+		g.addDefault("Groups.admin.Title.Leave.Line1", "&7Leaving residence");
+		g.addDefault("Groups.admin.Title.Leave.Line2", "&a%residence");
+
+		g.addDefault("Groups.admin.ActionBar.Use", true);
+		g.addDefault("Groups.admin.ActionBar.Enter", "&7Welcome &a%player &7in residence &a%residence&7, owned by: &a%owner");
+		g.addDefault("Groups.admin.ActionBar.Leave", "&7Leaving residence &a%residence");
+
+		g.addDefault("Groups.admin.Chat.Use", false);
+		g.addDefault("Groups.admin.Chat.Enter", "&7Welcome &a%player &7in residence &a%residence&7, owned by: &a%owner");
+		g.addDefault("Groups.admin.Chat.Leave", "&7Leaving residence &a%residence");
 		
-		g.setHeader("residence.group.<group> to get access for group");
+		g.setHeader("residence.group.<group> to get access for group & Required relog of player to apply new group");
 		g.create();
+		c.addDefault("ShowNoPermsMsg", true);
 		c.create();
-		api=new ResidenceAPI();
-		api.load();
+				if(Loader.g.getConfig().getString("Groups")!=null)
+				for(Player s : TheAPI.getOnlinePlayers()) {
+						for(String sd: Loader.g.getConfig().getConfigurationSection("Groups").getKeys(false)) {
+							if(s.hasPermission("residence.group."+sd)) {
+								new Data(s.getName()).setGroup(sd);
+								break;
+				}}}
+				
 		Bukkit.getPluginCommand("UltimateResidence").setExecutor(new URCMD());
 		Bukkit.getPluginManager().registerEvents(new ResEvents(), this);
-		
 	}
+	
 	public void onDisable() {
-		c.reload();
-		g.reload();
-		api.unload();
+		API.reload();
 	}
 	
 	public static ConfigAPI getData(World world) {
-		if(a.containsKey(world)) {
-		return a.get(world);
-		}else {
-			ConfigAPI config = new ConfigAPI("UltimateResidence/Data",world.getName());
-			config.create();
-			a.put(world, config);
-			return config;
-		}
+		if(world==null)return null;
+		ConfigAPI config = new ConfigAPI("UltimateResidence/Data",world.getName());
+		config.create();
+		return config;
 	}
 }

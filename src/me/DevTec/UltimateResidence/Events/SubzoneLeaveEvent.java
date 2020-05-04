@@ -8,14 +8,15 @@ import org.bukkit.event.HandlerList;
 import me.DevTec.UltimateResidence.Loader;
 import me.DevTec.UltimateResidence.API.Residence;
 import me.DevTec.UltimateResidence.API.API;
+import me.DevTec.UltimateResidence.API.Subzone;
 
-public class ResidenceLeaveEvent extends Event {
+public class SubzoneLeaveEvent extends Event {
 	private Player s;
-	private Residence r;
+	private Subzone r;
 	private Location loc;
 	private String ac,chat;
 	private String[] title;
-	public ResidenceLeaveEvent(Residence r, Location l, Player s) {
+	public SubzoneLeaveEvent(Subzone r, Location l, Player s) {
 		this.s=s;
 		this.r=r;
 		loc=l;
@@ -60,6 +61,10 @@ public class ResidenceLeaveEvent extends Event {
 	}
 	
 	public Residence getResidence() {
+		return r.getResidence();
+	}
+	
+	public Subzone getSubzone() {
 		return r;
 	}
 	

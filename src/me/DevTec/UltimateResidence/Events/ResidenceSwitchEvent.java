@@ -1,7 +1,7 @@
 package me.DevTec.UltimateResidence.Events;
 
-import org.bukkit.Location;
 import org.bukkit.entity.Player;
+import org.bukkit.event.Cancellable;
 import org.bukkit.event.Event;
 import org.bukkit.event.HandlerList;
 
@@ -9,30 +9,30 @@ import me.DevTec.UltimateResidence.Loader;
 import me.DevTec.UltimateResidence.API.Residence;
 import me.DevTec.UltimateResidence.API.API;
 
-public class ResidenceLeaveEvent extends Event {
+public class ResidenceSwitchEvent extends Event implements Cancellable {
 	private Player s;
+	private boolean c;
 	private Residence r;
-	private Location loc;
 	private String ac,chat;
 	private String[] title;
-	public ResidenceLeaveEvent(Residence r, Location l, Player s) {
+	public ResidenceSwitchEvent(Residence r, Player s) {
 		this.s=s;
 		this.r=r;
-		loc=l;
 		String group = API.getData(s.getName()).getGroup().getName();
 		if(Loader.g.getConfig().getBoolean("Groups."+group+".Chat.Use")) {
-			setChat(Loader.g.getConfig().getString("Groups."+group+".Chat.Leave"));
+			setChat(Loader.g.getConfig().getString("Groups."+group+".Chat.Enter"));
 		}
 		if(Loader.g.getConfig().getBoolean("Groups."+group+".Title.Use")) {
-			setTitle(Loader.g.getConfig().getString("Groups."+group+".Title.Leave.Line1"),Loader.g.getConfig().getString("Groups."+group+".Title.Leave.Line2"));
+			setTitle(Loader.g.getConfig().getString("Groups."+group+".Title.Enter.Line1"),Loader.g.getConfig().getString("Groups."+group+".Title.Enter.Line2"));
 		}
 		if(Loader.g.getConfig().getBoolean("Groups."+group+".ActionBar.Use")) {
-			setActionBar(Loader.g.getConfig().getString("Groups."+group+".ActionBar.Leave"));
+			setActionBar(Loader.g.getConfig().getString("Groups."+group+".ActionBar.Enter"));
 		}
 	}
 	
-	public Location getLocation() {
-		return loc;
+	public void setTitle(String a, String b) {
+		if(a !=null && b != null)
+		title=new String[] {a,b};
 	}
 
 	public void setChat(String a) {
@@ -42,21 +42,16 @@ public class ResidenceLeaveEvent extends Event {
 	public String getChat() {
 		return chat;
 	}
-	public void setTitle(String a, String b) {
-		if(a !=null && b != null)
-		title=new String[] {a,b};
-	}
-	
-	public String[] getTitle() {
-		return title;
-	}
-	
 	public void setActionBar(String a) {
 		ac=a;
 	}
 	
 	public String getActionBar() {
 		return ac;
+	}
+	
+	public String[] getTitle() {
+		return title;
 	}
 	
 	public Residence getResidence() {
@@ -75,4 +70,15 @@ public class ResidenceLeaveEvent extends Event {
 	public static HandlerList getHandlerList() {
 		return new HandlerList();
 	}
+
+	@Override
+	public boolean isCancelled() {
+		return c;
+	}
+
+	@Override
+	public void setCancelled(boolean cancel) {
+		c=cancel;
+	}
+
 }

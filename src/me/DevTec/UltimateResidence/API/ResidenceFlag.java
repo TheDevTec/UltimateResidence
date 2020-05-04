@@ -1,25 +1,8 @@
-package me.DevTec.UltimateResidence;
+package me.DevTec.UltimateResidence.API;
 
 import org.bukkit.craftbukkit.libs.jline.internal.Nullable;
 
 public class ResidenceFlag {
-	
-	public static enum Flag {
-		MOVE,
-		PVP,
-		FEED,
-		HEAL,
-		ANIMALSPAWN,
-		ANIMALKILL,
-		MONSTERSPAWN,
-		MONSTERKILL,
-		USE,
-		FLY,
-		ANVIL,NODURABILITY,
-		WORKBENCH,DOOR,ANVILBREAK,
-		BUILD,
-		BREAK, NODAMAGE, NOFALLDAMAGE
-	}
 	
 	private Flag s;
 	private String g;

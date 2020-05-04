@@ -1,4 +1,4 @@
-package me.DevTec.UltimateResidence;
+package me.DevTec.UltimateResidence.Utils;
 
 import org.bukkit.command.CommandSender;
 
