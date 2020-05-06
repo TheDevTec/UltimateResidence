@@ -30,8 +30,8 @@ public class Data {
 
 	public int getAmountOfResidences() {
 		int a= 0;
-		if(c.getConfig().getString("Residences")!=null)
-		for(String s: c.getConfigurationSection("Residences",false))a=a+getResidences(s).size();
+		if(c.existPath("Residences"))
+		for(String s: c.getConfigurationSection("Residences",false))a+=getResidences(s).size();
 		return a;
 	}
 	

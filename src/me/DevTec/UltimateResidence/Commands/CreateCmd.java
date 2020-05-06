@@ -15,8 +15,9 @@ public class CreateCmd {
 			return;
 			}
 		
-			if(API.getData(s.getName()).getAmountOfResidences() <= API.getData(s.getName()).getGroup().getMaxResidences()) {
-				TheAPI.msg(URCMD.d+"You reach maximum amount of residences.", s);
+			if(API.getData(s.getName()).getAmountOfResidences() >= API.getData(s.getName()).getGroup().getMaxResidences()) {
+				
+				TheAPI.msg(URCMD.d+"You reach maximum amount of residences. ("+API.getData(s.getName()).getAmountOfResidences()+"/"+API.getData(s.getName()).getGroup().getMaxResidences(), s);
 				return;
 			}
 		

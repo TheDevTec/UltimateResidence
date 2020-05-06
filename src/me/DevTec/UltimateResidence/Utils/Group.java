@@ -30,20 +30,20 @@ public class Group {
 	}
 
 	public int getMaxResidences() {
-		return Loader.g.getConfig().getInt("Groups."+s+".Residence");
+		return Loader.g.getConfig().getInt("Groups."+s+".Residences");
 	}
 
 	public int getMaxSubResidences() {
-		return Loader.g.getConfig().getInt("Groups."+s+".SubResidence");
+		return Loader.g.getConfig().getInt("Groups."+s+".SubResidences");
 	}
 
 	public void setMaxResidences(int max) {
-		 Loader.g.getConfig().set("Groups."+s+".Residence",max);
+		 Loader.g.getConfig().set("Groups."+s+".Residences",max);
 		 Loader.g.save();
 	}
 
 	public void setMaxSubResidences(int max) {
-		 Loader.g.getConfig().set("Groups."+s+".SubResidence",max);
+		 Loader.g.getConfig().set("Groups."+s+".SubResidences",max);
 		 Loader.g.save();
 	}
 

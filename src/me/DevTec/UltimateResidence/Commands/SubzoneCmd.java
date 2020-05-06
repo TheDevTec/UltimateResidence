@@ -27,7 +27,7 @@ public class SubzoneCmd {
 					return;
 				}
 
-				if(r.getSubzones().size() <= API.getData(s.getName()).getGroup().getMaxSubResidences()) {
+				if(r.getSubzones().size() >= API.getData(s.getName()).getGroup().getMaxSubResidences()) {
 					TheAPI.msg(URCMD.d+"You reach maximum amount of subzones in residence &c"+r.getName()+"&7.", s);
 					return;
 				}
