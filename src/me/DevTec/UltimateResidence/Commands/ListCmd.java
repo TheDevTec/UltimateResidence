@@ -21,8 +21,9 @@ public class ListCmd {
 		return;
 		}
 		TheAPI.msg("&8&l»------ &cResidences of user "+args[1]+" &8&l------«", s);
-			for(String res : API.getResidences(args[1]))
-				TheAPI.msg("&7- &c"+res+" &7("+API.getResidenceByName(res).getWorld().getName()+")",s);
+			for(String res : API.getResidences(args[1])) {
+				TheAPI.msg("&7- &c"+res+" &7("+API.getResidenceWorldByName(res).getName()+")",s);
+			}
 			return;
 	}
 

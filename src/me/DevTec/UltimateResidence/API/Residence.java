@@ -14,10 +14,10 @@ import me.Straiker123.ConfigAPI;
 import me.Straiker123.TheAPI;
 
 public class Residence {
-	private Location[] l;
+	private Position[] l;
 	private String name,owner;
 	private World world;
-	private int x,z;
+	private double[] size;
 	private ConfigAPI ac;
 	public Residence(String name, World w, String owner) {
 		this.name=name;
@@ -25,9 +25,8 @@ public class Residence {
 		this.world=w;
 		ac=Loader.getData(world);
 		String[] sd = ac.getString("Residence."+name+".Corners").split(":");
-		l=new Location[] {TheAPI.getStringUtils().getLocationFromString(sd[0]),TheAPI.getStringUtils().getLocationFromString(sd[1])};
-		x = Math.max(l[0].getBlockX(), l[1].getBlockX()) - Math.min(l[0].getBlockX(), l[1].getBlockX()) + 1;
-	    z = Math.max(l[0].getBlockZ(), l[1].getBlockZ())-Math.min(l[0].getBlockZ(), l[1].getBlockZ())+1;
+		l=new Position[] {new Position(TheAPI.getStringUtils().getLocationFromString(sd[0])),new Position(TheAPI.getStringUtils().getLocationFromString(sd[1]))};
+		size = new double[] { Math.max(l[0].x(), l[1].x()) - Math.min(l[0].x(), l[1].x()) + 1, Math.max(l[0].z(), l[1].z())-Math.min(l[0].z(), l[1].z())+1};
 	}
 
 	public boolean isMember(String player) {
@@ -47,8 +46,8 @@ public class Residence {
 	 * getSize()[1] - Z
 	 * @return int[]
 	 */
-	public int[] getSize() {
-		return new int[] {x,z};
+	public double[] getSize() {
+		return size;
 	}
 	
 	/**
@@ -128,7 +127,7 @@ public class Residence {
 	 * getCorners()[1] - corner #2
 	 * @return Location[]
 	 */
-	public Location[] getCorners() {
+	public Position[] getCorners() {
 		return l;
 	}
 
@@ -192,11 +191,11 @@ public class Residence {
 	}
 
 	public boolean inResidence(Player player){
-		return TheAPI.getBlocksAPI().isInside(player.getLocation(),l[0],l[1]);
+		return inResidence(new Position(player.getLocation()));
 	}
 
 	public boolean inResidence(Location loc){
-		return TheAPI.getBlocksAPI().isInside(loc,l[0],l[1]);
+		return inResidence(new Position(loc));
 	}
 
 	public List<String> getSubzones() {
@@ -263,9 +262,9 @@ public class Residence {
 	}
 
 	public boolean inResidence(Position c) {
-        return new IntRange(l[0].getX(), l[1].getX()).containsDouble(c.x())
-                && new IntRange(l[0].getY(), l[1].getY()).containsDouble(c.y())
-                &&  new IntRange(l[0].getZ(), l[1].getZ()).containsDouble(c.z());
+        return new IntRange(l[0].x(), l[1].x()).containsDouble(c.x())
+                && new IntRange(l[0].y(), l[1].y()).containsDouble(c.y())
+                &&  new IntRange(l[0].z(), l[1].z()).containsDouble(c.z());
 	}
 
 }

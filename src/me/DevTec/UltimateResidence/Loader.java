@@ -1,5 +1,7 @@
 package me.DevTec.UltimateResidence;
 
+import java.util.HashMap;
+
 import org.bukkit.Bukkit;
 import org.bukkit.World;
 import org.bukkit.entity.Player;
@@ -16,6 +18,7 @@ public class Loader extends JavaPlugin {
 	public static boolean loaded;
 	public static ConfigAPI c = new ConfigAPI("UltimateResidence", "Config");
 	public static ConfigAPI g = new ConfigAPI("UltimateResidence","Groups");
+	public static HashMap<World, ConfigAPI> map = new HashMap<World, ConfigAPI>();
 	public void onEnable() {
 		g.addDefault("Groups.default.Residences", 5);
 		g.addDefault("Groups.default.SubResidences", 3);
@@ -94,8 +97,11 @@ public class Loader extends JavaPlugin {
 	
 	public static ConfigAPI getData(World world) {
 		if(world==null)return null;
+		if(!map.containsKey(world)) {
 		ConfigAPI config = new ConfigAPI("UltimateResidence/Data",world.getName());
 		config.create();
-		return config;
+		map.put(world, config);
+		}
+		return map.get(world);
 	}
 }

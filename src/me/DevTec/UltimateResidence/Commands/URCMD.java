@@ -30,6 +30,7 @@ public class URCMD implements CommandExecutor {
 			// /Residence pdel [player]
 			TheAPI.msg(d+"&e/Residence subzone [name]", s); //done
 			TheAPI.msg(d+"&e/Residence vert", s); //done
+			TheAPI.msg(d+"&e/Residence tpset", s); //done
 			TheAPI.msg(d+"&e/Residence teleport [residence]", s); //done
 			TheAPI.msg(d+"&e/Residence info [residence]", s); //done
 			TheAPI.msg(d+"&e/Residence limits", s); //done
@@ -44,6 +45,13 @@ public class URCMD implements CommandExecutor {
 				return true;
 			}
 			new ReloadCmd(s);
+			return true;
+		}
+		if(args[0].equalsIgnoreCase("tpset")) {
+			if(!ad.has(s,"residence.tpset")) {
+				return true;
+			}
+			new TeleportSet(s);
 			return true;
 		}
 		if(args[0].equalsIgnoreCase("vert")) {

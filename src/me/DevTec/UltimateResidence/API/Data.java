@@ -56,7 +56,7 @@ public class Data {
 	}
 
 	public void setGroup(String s) {
-		if(c.getConfig().getString("Group").equals(s))return;
+		if(c.existPath("Group") && c.getString("Group").equals(s))return;
 		c.set("Group",s);
 		save();
 	}

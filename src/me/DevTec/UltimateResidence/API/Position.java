@@ -1,6 +1,7 @@
 package me.DevTec.UltimateResidence.API;
 
 import org.bukkit.Location;
+import org.bukkit.World;
 
 public class Position {
 	private double x,y,z;
@@ -14,6 +15,11 @@ public class Position {
 		this.z=loc.getZ();
 		this.y=loc.getY();
 	}
+	
+	public Location toLocation(World w) {
+		return new Location(w,x,y,z);
+	}
+	
 	public double x() {
 		return x;
 	}

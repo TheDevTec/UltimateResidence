@@ -1,6 +1,5 @@
 package me.DevTec.UltimateResidence.API;
 
-import java.io.File;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -19,9 +18,8 @@ import me.Straiker123.TheAPI;
 public class API {
 	
 	public static void reload() {
-		for(World w : Bukkit.getWorlds()) 
-		if(new File("UltimateResidence/Data/"+w.getName()).exists())
-			Loader.getData(w).reload();
+		for(World w : Loader.map.keySet()) 
+			Loader.map.get(w).reload();
 		Loader.c.reload();
 		Loader.g.reload();
 	}
@@ -47,6 +45,17 @@ public class API {
 		return r;
 	}
 	
+	public static World getResidenceWorldByName(String res) {
+		World r = null;
+		for(World w : Bukkit.getWorlds()) {
+			if(getResidences(w).contains(res)) {
+				r=getResidence(w,res).getWorld();
+				break;
+			}
+		}
+		return r;
+	}
+	
 	public static List<String> getResidences(World world, String player){
 		return getData(player).getResidences(world.getName());
 	}
@@ -57,11 +66,9 @@ public class API {
 
 	private static List<String> getResidences(World world) {
 		List<String> a = new ArrayList<String>();
-		if(new File("UltimateResidence/Data/"+world.getName()).exists())
-		if(Loader.getData(world).getString("Residence") != null)
-		for(String s: Loader.getData(world).getConfigurationSection("Residence",false)) {
+		if(new ConfigAPI("UltimateResidence","Data/"+world.getName()).existPath("Residence"))
+		for(String s: Loader.getData(world).getConfigurationSection("Residence",false))
 			a.add(s);
-		}
 		return a;
 	}
 
@@ -122,16 +129,17 @@ public class API {
 	}
 
 	public static Residence getResidence(World w,Position location) {
-		String find = null;
+		Residence find = null;
 		for(String s : getResidences(w)) {
+
 			Residence a= getResidence(w,s);
 			if(a!=null)
 			if(a.inResidence(location)) {
-				find=s;
+				find=a;
 				break;
 			}
 		}
-		return getResidence(w,find);
+		return find;
 	}
 	
 	public static boolean isInsideResidence(World w, Position x, Position x2) {

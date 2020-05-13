@@ -24,6 +24,8 @@ import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerMoveEvent;
 import org.bukkit.event.player.PlayerToggleFlightEvent;
 
+import com.google.common.collect.Maps;
+
 import me.DevTec.UltimateResidence.Loader;
 import me.DevTec.UltimateResidence.API.API;
 import me.DevTec.UltimateResidence.API.Data;
@@ -41,10 +43,10 @@ import me.Straiker123.TheAPI;
 import me.Straiker123.TheRunnable;
 
 public class ResEvents implements Listener {
-	HashMap<Player, Residence> in = new HashMap<Player, Residence>();
-	HashMap<Player, Subzone> inz = new HashMap<Player, Subzone>();
-	HashMap<Player, Long> wait = new HashMap<Player, Long>();
-	HashMap<Player, Long> w = new HashMap<Player, Long>();
+	HashMap<Player, Residence> in =Maps.newHashMap();
+	HashMap<Player, Subzone> inz =Maps.newHashMap();
+	HashMap<Player, Long> wait =Maps.newHashMap();
+	HashMap<Player, Long> w =Maps.newHashMap();
 	//left,right
 	
 	public void s(String msg,Player p) {
@@ -59,7 +61,7 @@ public class ResEvents implements Listener {
 		}
 	}
 	
-	public static HashMap<String, Location[]> locs = new HashMap<String, Location[]>();
+	public static HashMap<String, Location[]> locs = Maps.newHashMap();
 
 	@EventHandler
 	public void onClick(BlockFadeEvent e) {
@@ -107,7 +109,7 @@ public class ResEvents implements Listener {
 	@EventHandler
 	public void onJoin(PlayerJoinEvent e) {
 		Player s = e.getPlayer();
-		new TheRunnable().runLater(new Runnable() {
+		new TheRunnable().runAsyncLater(new Runnable() {
 			public void run() {
 		for(String sd: Loader.g.getConfig().getConfigurationSection("Groups").getKeys(false)) {
 			if(s.hasPermission("residence.group."+sd)) {
@@ -300,7 +302,7 @@ public class ResEvents implements Listener {
 	//heal, feed task
 	public void startTasks(Residence r, Subzone z, String s) {
 		if(m.containsKey(s))return;
-		m.put(s, new TheRunnable().runRepeating(new Runnable() {
+		m.put(s, new TheRunnable().runAsyncRepeating(new Runnable() {
 			public void run() {
 				Player p = TheAPI.getPlayer(s);
 				if(p==null) {
@@ -318,7 +320,8 @@ public class ResEvents implements Listener {
 							if(p.getFoodLevel() !=20)
 							p.setFoodLevel((p.getFoodLevel()+2) > 20 ? p.getFoodLevel()+2 : 20);
 						}
-					}else {
+					return;
+				}
 		if(r.getFlag(Flag.HEAL)||r.getPlayerFlag(Flag.HEAL,p.getName())) {
 				@SuppressWarnings("deprecation") double max = p.getMaxHealth();
 				if(p.getHealth() !=max)
@@ -328,8 +331,7 @@ public class ResEvents implements Listener {
 				if(p.getFoodLevel() !=20)
 				p.setFoodLevel((p.getFoodLevel()+2) > 20 ? p.getFoodLevel()+2 : 20);
 			}}
-			}
-		}, 10));
+		}, 0,10));
 	}
 	
 	public void stopTasks(String s) {
@@ -348,7 +350,7 @@ public class ResEvents implements Listener {
 			if(in.containsKey(p) && in.get(p).equals(r)) { //in residence
 				if(inz.containsKey(p) && z != null && !inz.get(p).equals(z)) { //switch subzone
 					SubzoneSwitchEvent es = new SubzoneSwitchEvent(z,p);
-					Bukkit.getPluginManager().callEvent(es);
+						Bukkit.getPluginManager().callEvent(es);
 					if(es.isCancelled()||!z.getFlag(Flag.MOVE) && !ad.has(p,"residence.admin")
 							&&!z.getPlayerFlag(Flag.MOVE,p.getName())) {
 						if(Loader.c.getBoolean("ShowNoPermsMsg"))
@@ -455,7 +457,6 @@ public class ResEvents implements Listener {
 					if(es.getChat()!=null) 
 						TheAPI.msg(es.getChat().replace("%player", p.getName()).replace("%residence", r.getName())
 								.replace("%owner", r.getOwner()), p);
-					
 			in.put(p, r);
 				}
 					startTasks(r,r.getSubzone(p.getLocation()),p.getName());
@@ -463,33 +464,35 @@ public class ResEvents implements Listener {
 			if(in.containsKey(p) && r==null) {
 			ResidenceLeaveEvent es = new ResidenceLeaveEvent(in.get(p),e.getFrom(),p);
 			Bukkit.getPluginManager().callEvent(es);
+			Residence rs = in.get(p);
 			if(es.getTitle()!=null)
-				TheAPI.getPlayerAPI(p).sendTitle(es.getTitle()[0].replace("%player", p.getName()).replace("%residence", in.get(p).getName())
-						.replace("%owner", in.get(p).getOwner()), es.getTitle()[1].replace("%player", p.getName()).replace("%residence", in.get(p).getName())
-						.replace("%owner", in.get(p).getOwner()));
+				TheAPI.getPlayerAPI(p).sendTitle(es.getTitle()[0].replace("%player", p.getName()).replace("%residence", rs.getName())
+						.replace("%owner", rs.getOwner()), es.getTitle()[1].replace("%player", p.getName()).replace("%residence", rs.getName())
+						.replace("%owner", rs.getOwner()));
 			if(es.getActionBar()!=null) 
-				TheAPI.sendActionBar(p, es.getActionBar().replace("%player", p.getName()).replace("%residence", in.get(p).getName())
-						.replace("%owner", in.get(p).getOwner()));
+				TheAPI.sendActionBar(p, es.getActionBar().replace("%player", p.getName()).replace("%residence", rs.getName())
+						.replace("%owner", rs.getOwner()));
 			if(es.getChat()!=null) 
-				TheAPI.msg(es.getChat().replace("%player", p.getName()).replace("%residence", in.get(p).getName())
-						.replace("%owner", in.get(p).getOwner()), p);
+				TheAPI.msg(es.getChat().replace("%player", p.getName()).replace("%residence", rs.getName())
+						.replace("%owner", rs.getOwner()), p);
 			stopTasks(p.getName());
+			in.remove(p);
 			if(inz.containsKey(p) && z == null) { //leave subzone
 				SubzoneLeaveEvent ess = new SubzoneLeaveEvent(inz.get(p),e.getFrom(),p);
 				Bukkit.getPluginManager().callEvent(ess);
-				if(ess.getTitle()!=null)
-					TheAPI.getPlayerAPI(p).sendTitle(ess.getTitle()[0].replace("%player", p.getName()).replace("%residence", inz.get(p).getName())
-							.replace("%owner", inz.get(p).getOwner()), ess.getTitle()[1].replace("%player", p.getName()).replace("%residence", inz.get(p).getName())
-							.replace("%owner", inz.get(p).getOwner()));
-				if(ess.getActionBar()!=null) 
-					TheAPI.sendActionBar(p, ess.getActionBar().replace("%player", p.getName()).replace("%residence", inz.get(p).getName())
-							.replace("%owner", inz.get(p).getOwner()));
-				if(ess.getChat()!=null) 
-					TheAPI.msg(es.getChat().replace("%player", p.getName()).replace("%residence", inz.get(p).getName())
-							.replace("%owner", inz.get(p).getOwner()), p);
+				Subzone rr = inz.get(p);
 				inz.remove(p);
+				if(ess.getTitle()!=null)
+					TheAPI.getPlayerAPI(p).sendTitle(ess.getTitle()[0].replace("%player", p.getName()).replace("%residence", rr.getName())
+							.replace("%owner", rr.getOwner()), ess.getTitle()[1].replace("%player", p.getName()).replace("%residence", rr.getName())
+							.replace("%owner", rr.getOwner()));
+				if(ess.getActionBar()!=null) 
+					TheAPI.sendActionBar(p, ess.getActionBar().replace("%player", p.getName()).replace("%residence", rr.getName())
+							.replace("%owner", rr.getOwner()));
+				if(ess.getChat()!=null) 
+					TheAPI.msg(es.getChat().replace("%player", p.getName()).replace("%residence", rr.getName())
+							.replace("%owner", rr.getOwner()), p);
 			}
-			in.remove(p);
 			}
 		} //THIS IS CRAZY! - Straikerina 14:20, 25. 4. 2020
 	}}	//*Straikerina is lost in own code* 14:21

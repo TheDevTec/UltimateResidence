@@ -20,14 +20,14 @@ public class SubzoneSwitchEvent extends Event implements Cancellable {
 		this.s=s;
 		this.r=z;
 		String group = API.getData(s.getName()).getGroup().getName();
-		if(Loader.g.getConfig().getBoolean("Groups."+group+".Chat.Use")) {
-			setChat(Loader.g.getConfig().getString("Groups."+group+".Chat.Enter"));
+		if(Loader.g.getBoolean("Groups."+group+".Chat.Use")) {
+			setChat(Loader.g.getString("Groups."+group+".Chat.Enter"));
 		}
-		if(Loader.g.getConfig().getBoolean("Groups."+group+".Title.Use")) {
-			setTitle(Loader.g.getConfig().getString("Groups."+group+".Title.Enter.Line1"),Loader.g.getConfig().getString("Groups."+group+".Title.Enter.Line2"));
+		if(Loader.g.getBoolean("Groups."+group+".Title.Use")) {
+			setTitle(Loader.g.getString("Groups."+group+".Title.Enter.Line1"),Loader.g.getString("Groups."+group+".Title.Enter.Line2"));
 		}
-		if(Loader.g.getConfig().getBoolean("Groups."+group+".ActionBar.Use")) {
-			setActionBar(Loader.g.getConfig().getString("Groups."+group+".ActionBar.Enter"));
+		if(Loader.g.getBoolean("Groups."+group+".ActionBar.Use")) {
+			setActionBar(Loader.g.getString("Groups."+group+".ActionBar.Enter"));
 		}
 	}
 	
@@ -67,13 +67,16 @@ public class SubzoneSwitchEvent extends Event implements Cancellable {
 		return s;
 	}
 	
+
+	private static final HandlerList a = new HandlerList();
+	
 	@Override
 	public HandlerList getHandlers() {
-		return new HandlerList();
+		return a;
 	}
 
 	public static HandlerList getHandlerList() {
-		return new HandlerList();
+		return a;
 	}
 
 	@Override

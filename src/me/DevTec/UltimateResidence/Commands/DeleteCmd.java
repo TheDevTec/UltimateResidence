@@ -39,22 +39,20 @@ public class DeleteCmd {
 			TheAPI.msg(URCMD.d+"&e/Residence delete [residence.<subzone>]", s);
 			return;
 			}
-		String d=args[1];
-		String[] a = d.split("\\.");
-		if(a.length!=1) {
+		String[] a = args[1].split("\\.");
+		if(a.length>=2) {
 			Residence r=API.getResidenceByName(a[0]);
-			String name = d.replaceFirst(a[0]+".", "");
-			Subzone z = r.getSubzone(name);
+			Subzone z = r.getSubzone(a[1]);
 			if(z!=null) {
 				if(z.getOwner().equals(s.getName())||s.hasPermission("residence.admin")) {
 					r.removeSubzone(z);
-					TheAPI.msg(URCMD.d+"Subzone &a"+name+" &7deleted.", s);
+					TheAPI.msg(URCMD.d+"Subzone &a"+a[1]+" &7deleted.", s);
 					return;
 					}
 					TheAPI.msg(URCMD.d+"You must be owner of subzone to delete it.", s);
 				return;
 			}
-			TheAPI.msg(URCMD.d+"Subzone &c"+name+" &7doesn't exist.", s);
+			TheAPI.msg(URCMD.d+"Subzone &c"+a[1]+" &7doesn't exist.", s);
 			return;
 		}else {
 			Residence r=API.getResidenceByName(args[1]);

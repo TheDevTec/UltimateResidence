@@ -6,8 +6,8 @@ import java.util.List;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
-import me.DevTec.UltimateResidence.API.Residence;
 import me.DevTec.UltimateResidence.API.API;
+import me.DevTec.UltimateResidence.API.Residence;
 import me.DevTec.UltimateResidence.API.ResidenceFlag;
 import me.DevTec.UltimateResidence.API.Subzone;
 import me.Straiker123.TheAPI;
@@ -16,9 +16,11 @@ public class InfoCmd {
 
 	public InfoCmd(CommandSender s, String[] args) {
 		if(args.length==1) {
-			if(s instanceof Player && API.getResidence((Player)s)!=null) {
+			if(s instanceof Player) {
 				Residence r = API.getResidence((Player)s);
-				if(r.getSubzone((Player)s)==null) {
+				if(r!=null) {
+					Subzone z = r.getSubzone((Player)s);
+				if(z==null) {
 				TheAPI.msg("&8&l»------ &c&lInfo about residence &8&l------«", s);
 				TheAPI.msg(URCMD.d+"Residence: &a"+r.getName(), s);
 				TheAPI.msg(URCMD.d+"Subzones: &a"+TheAPI.getStringUtils().join(r.getSubzones(), ", "), s);
@@ -29,7 +31,6 @@ public class InfoCmd {
 				TheAPI.msg("&8&l»------ &c&lInfo about residence &8&l------«", s);
 				return;
 			}
-				Subzone z = r.getSubzone((Player)s);
 				TheAPI.msg("&8&l»------ &c&lInfo about subzone &8&l------«", s);
 				TheAPI.msg(URCMD.d+"Residence: &a"+r.getName(), s);
 				TheAPI.msg(URCMD.d+"Subzone: &a"+z.getName(), s);
@@ -40,6 +41,9 @@ public class InfoCmd {
 				TheAPI.msg("&8&l»------ &c&lInfo about subzone &8&l------«", s);
 				return;
 			}
+			TheAPI.msg(URCMD.d+"&e/Residence info [residence]", s);
+			return;
+		}
 			TheAPI.msg(URCMD.d+"&e/Residence info [residence]", s);
 			return;
 		}
