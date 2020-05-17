@@ -590,28 +590,28 @@ public class ResEvents implements Listener {
 			Subzone z = r.getSubzone(s.getLocation());
 		if(z!=null) {
 			if(e.getCause()==DamageCause.FALL)
-				if(!z.getFlag(Flag.NOFALLDAMAGE)&&!z.getPlayerFlag(Flag.NOFALLDAMAGE,s.getName())) {
+				if(z.getFlag(Flag.NOFALLDAMAGE)&&z.getPlayerFlag(Flag.NOFALLDAMAGE,s.getName())) {
 					e.setCancelled(true);
 					return;
 				}else {
 					return;
 				}
 
-				if(!z.getFlag(Flag.NODAMAGE)&&!z.getPlayerFlag(Flag.NODAMAGE,s.getName())) {
+				if(z.getFlag(Flag.NODAMAGE)&&z.getPlayerFlag(Flag.NODAMAGE,s.getName())) {
 					e.setCancelled(true);
 					return;
 				}
 					return;
 		}else {
 				if(e.getCause()==DamageCause.FALL)
-				if(!r.getFlag(Flag.NOFALLDAMAGE)&&!r.getPlayerFlag(Flag.NOFALLDAMAGE,s.getName())) {
+				if(r.getFlag(Flag.NOFALLDAMAGE)&&r.getPlayerFlag(Flag.NOFALLDAMAGE,s.getName())) {
 					e.setCancelled(true);
 					return;
 				}else {
 					return;
 				}
 
-				if(!r.getFlag(Flag.NODAMAGE)&&! r.getPlayerFlag(Flag.NODAMAGE,s.getName())) {
+				if(r.getFlag(Flag.NODAMAGE)&&r.getPlayerFlag(Flag.NODAMAGE,s.getName())) {
 					e.setCancelled(true);
 					return;
 				}
