@@ -40,7 +40,8 @@ import me.DevTec.UltimateResidence.Events.SubzoneEnterEvent;
 import me.DevTec.UltimateResidence.Events.SubzoneLeaveEvent;
 import me.DevTec.UltimateResidence.Events.SubzoneSwitchEvent;
 import me.Straiker123.TheAPI;
-import me.Straiker123.TheRunnable;
+import me.Straiker123.Scheduler.Scheduler;
+import me.Straiker123.Scheduler.Tasker;
 
 public class ResEvents implements Listener {
 	HashMap<Player, Residence> in =Maps.newHashMap();
@@ -109,15 +110,15 @@ public class ResEvents implements Listener {
 	@EventHandler
 	public void onJoin(PlayerJoinEvent e) {
 		Player s = e.getPlayer();
-		new TheRunnable().runAsyncLater(new Runnable() {
+		new Tasker() {
 			public void run() {
-		for(String sd: Loader.g.getConfig().getConfigurationSection("Groups").getKeys(false)) {
-			if(s.hasPermission("residence.group."+sd)) {
-				new Data(s.getName()).setGroup(sd);
-				break;
-			}}
-		}
-	}, 20);
+				for(String sd: Loader.g.getConfig().getConfigurationSection("Groups").getKeys(false)) {
+					if(s.hasPermission("residence.group."+sd)) {
+						new Data(s.getName()).setGroup(sd);
+						break;
+					}}
+			}
+		}.laterAsync(20);
 	}
 	
 	@EventHandler
@@ -298,15 +299,16 @@ public class ResEvents implements Listener {
 				||s.contains("PARROT")||s.contains("BEAR")||s.contains("RABBIT")||s.contains("SHEEP")||s.contains("SQUIT")
 				||s.contains("VILLAGER")||s.contains("WOLF")||s.contains("ARMOR_STAND")||s.contains("ITEM_FRAME");
 	}
-	HashMap<String, TheRunnable> m = new HashMap<String, TheRunnable>();
+	HashMap<String, Integer> m = new HashMap<String, Integer>();
 	//heal, feed task
 	public void startTasks(Residence r, Subzone z, String s) {
 		if(m.containsKey(s))return;
-		m.put(s, new TheRunnable().runAsyncRepeating(new Runnable() {
+		m.put(s,
+		new Tasker() {
 			public void run() {
 				Player p = TheAPI.getPlayer(s);
 				if(p==null) {
-					m.get(s).cancel();
+					Scheduler.cancelTask(m.get(s));
 					m.remove(s);
 					return;
 				}
@@ -331,12 +333,14 @@ public class ResEvents implements Listener {
 				if(p.getFoodLevel() !=20)
 				p.setFoodLevel((p.getFoodLevel()+2) > 20 ? p.getFoodLevel()+2 : 20);
 			}}
-		}, 0,10));
+		}.repeating(0,10));
 	}
 	
 	public void stopTasks(String s) {
-		if(m.containsKey(s))
-		m.get(s).cancel();
+		if(m.containsKey(s)) {
+			Scheduler.cancelTask(m.get(s));
+		m.remove(s);
+		}
 	}
 	
 	@EventHandler
