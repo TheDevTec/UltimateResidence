@@ -308,30 +308,29 @@ public class ResEvents implements Listener {
 			public void run() {
 				Player p = TheAPI.getPlayer(s);
 				if(p==null) {
-					Scheduler.cancelTask(m.get(s));
-					m.remove(s);
+					stopTasks(s);
 					return;
 				}
 				if(z!=null) {
 						if(z.getFlag(Flag.HEAL)||z.getPlayerFlag(Flag.HEAL,p.getName())) {
-							@SuppressWarnings("deprecation") double max = p.getMaxHealth();
+							double max = 20;
 							if(p.getHealth() !=max)
-							p.setHealth((p.getHealth()+2) >max ? p.getHealth()+2 :max);
+							p.setHealth((p.getHealth()+2) <max ? p.getHealth()+2 :max);
 					}
 					if(z.getFlag(Flag.FEED)||z.getPlayerFlag(Flag.FEED,p.getName())) {
 							if(p.getFoodLevel() !=20)
-							p.setFoodLevel((p.getFoodLevel()+2) > 20 ? p.getFoodLevel()+2 : 20);
+							p.setFoodLevel((p.getFoodLevel()+2) < 20 ? p.getFoodLevel()+2 : 20);
 						}
 					return;
 				}
 		if(r.getFlag(Flag.HEAL)||r.getPlayerFlag(Flag.HEAL,p.getName())) {
-				@SuppressWarnings("deprecation") double max = p.getMaxHealth();
+			double max = 20;
 				if(p.getHealth() !=max)
-				p.setHealth((p.getHealth()+2) >max ? p.getHealth()+2 :max);
+				p.setHealth((p.getHealth()+2) <max ? p.getHealth()+2 :max);
 		}
 		if(r.getFlag(Flag.FEED)||r.getPlayerFlag(Flag.FEED,p.getName())) {
 				if(p.getFoodLevel() !=20)
-				p.setFoodLevel((p.getFoodLevel()+2) > 20 ? p.getFoodLevel()+2 : 20);
+				p.setFoodLevel((p.getFoodLevel()+2) < 20 ? p.getFoodLevel()+2 : 20);
 			}}
 		}.repeating(0,10));
 	}
@@ -588,34 +587,33 @@ public class ResEvents implements Listener {
 	public void onGod(EntityDamageEvent e) {
 		if(e.getEntity() instanceof Player) {
 		Player s = (Player) e.getEntity();
-		if(s.hasPermission("residence.admin"))return;
 		Residence r= API.getResidence(s.getWorld(),new Position(e.getEntity().getLocation()));
 		if(r!= null) {
 			Subzone z = r.getSubzone(s.getLocation());
 		if(z!=null) {
 			if(e.getCause()==DamageCause.FALL)
-				if(z.getFlag(Flag.NOFALLDAMAGE)&&z.getPlayerFlag(Flag.NOFALLDAMAGE,s.getName())) {
+				if(z.getFlag(Flag.NOFALLDAMAGE)||z.getPlayerFlag(Flag.NOFALLDAMAGE,s.getName())) {
 					e.setCancelled(true);
 					return;
 				}else {
 					return;
 				}
 
-				if(z.getFlag(Flag.NODAMAGE)&&z.getPlayerFlag(Flag.NODAMAGE,s.getName())) {
+				if(z.getFlag(Flag.NODAMAGE)||z.getPlayerFlag(Flag.NODAMAGE,s.getName())) {
 					e.setCancelled(true);
 					return;
 				}
 					return;
 		}else {
 				if(e.getCause()==DamageCause.FALL)
-				if(r.getFlag(Flag.NOFALLDAMAGE)&&r.getPlayerFlag(Flag.NOFALLDAMAGE,s.getName())) {
+				if(r.getFlag(Flag.NOFALLDAMAGE)||r.getPlayerFlag(Flag.NOFALLDAMAGE,s.getName())) {
 					e.setCancelled(true);
 					return;
 				}else {
 					return;
 				}
 
-				if(r.getFlag(Flag.NODAMAGE)&&r.getPlayerFlag(Flag.NODAMAGE,s.getName())) {
+				if(r.getFlag(Flag.NODAMAGE)||r.getPlayerFlag(Flag.NODAMAGE,s.getName())) {
 					e.setCancelled(true);
 					return;
 				}

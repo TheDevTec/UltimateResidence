@@ -16,12 +16,14 @@ public class ListCmd {
 			}
 			TheAPI.msg("&8&l»------ &cResidences of user "+s.getName()+" &8&l------«", s);
 			for(String res : API.getResidences(s.getName())) {
+				if(API.getResidenceWorldByName(res)!=null)
 				TheAPI.msg("&7- &c"+res+" &7("+API.getResidenceByName(res).getWorld().getName()+")",s);
 			}
 		return;
 		}
 		TheAPI.msg("&8&l»------ &cResidences of user "+args[1]+" &8&l------«", s);
 			for(String res : API.getResidences(args[1])) {
+				if(API.getResidenceWorldByName(res)!=null)
 				TheAPI.msg("&7- &c"+res+" &7("+API.getResidenceWorldByName(res).getName()+")",s);
 			}
 			return;
