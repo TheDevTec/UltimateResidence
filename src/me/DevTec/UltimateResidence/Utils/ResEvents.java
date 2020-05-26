@@ -6,7 +6,6 @@ import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.entity.Arrow;
-import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -503,11 +502,11 @@ public class ResEvents implements Listener {
 	@EventHandler
 	public void onDamage(PlayerInteractAtEntityEvent e) {
 		Player s = e.getPlayer();
-		if(s.hasPermission("residence.admin"))return;
 		Residence r= API.getResidence(e.getRightClicked().getWorld(),new Position(e.getRightClicked().getLocation()));
 		if(r!= null) {
 			Subzone z = r.getSubzone(e.getRightClicked().getLocation());	
 			if(z!=null) {
+				if(!s.hasPermission("residence.admin"))
 				if(z.getFlag(Flag.INTERACT) ||z.getPlayerFlag(Flag.INTERACT,s.getName())) {
 					return;
 				}else {
@@ -517,6 +516,7 @@ public class ResEvents implements Listener {
 					return;
 				}
 			}else {
+				if(!s.hasPermission("residence.admin"))
 				if(r.getFlag(Flag.INTERACT)|| r.getPlayerFlag(Flag.INTERACT,s.getName())) {
 					return;
 				}else {
@@ -531,13 +531,14 @@ public class ResEvents implements Listener {
 		if(e.getDamager() instanceof Player||e.getDamager() instanceof Arrow) {
 		Player s = e.getDamager() instanceof Arrow ? (((Arrow)e.getDamager()).getShooter() instanceof Player ? (Player)((Arrow)e.getDamager()).getShooter() : null) : (Player)e.getDamager();
 		if(s==null)return;
-		if(s.hasPermission("residence.admin"))return;
 		Residence r= API.getResidence(e.getEntity().getWorld(),new Position(e.getEntity().getLocation()));
 		if(r!= null) {
 			Subzone z = r.getSubzone(e.getEntity().getLocation());	
 			if(z!=null) {
-					Flag f = e.getEntityType()==EntityType.PLAYER ? Flag.PVP : 
+					Flag f = e.getEntity() instanceof Player ? Flag.PVP : 
 						(isMob(e.getEntityType().name()) ? Flag.ANIMALKILL:Flag.MONSTERKILL);
+					if(f==Flag.ANIMALKILL||f==Flag.MONSTERKILL)
+					if(s.hasPermission("residence.admin"))return;
 					if(z.getFlag(f)|| z.getPlayerFlag(f,s.getName())) {
 						return;
 					}else {
@@ -547,8 +548,10 @@ public class ResEvents implements Listener {
 						return;
 					}
 				}else {
-				Flag f = e.getEntityType()==EntityType.PLAYER ? Flag.PVP : 
+				Flag f = e.getEntity() instanceof Player ? Flag.PVP : 
 					(isMob(e.getEntityType().name()) ? Flag.ANIMALKILL:Flag.MONSTERKILL);
+				if(f==Flag.ANIMALKILL||f==Flag.MONSTERKILL)
+				if(s.hasPermission("residence.admin"))return;
 				if(r.getFlag(f)|| r.getPlayerFlag(f,s.getName())) {
 					return;
 				}else {
