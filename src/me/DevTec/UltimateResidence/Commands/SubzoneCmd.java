@@ -2,11 +2,10 @@ package me.DevTec.UltimateResidence.Commands;
 
 import org.bukkit.entity.Player;
 
+import me.DevTec.TheAPI;
 import me.DevTec.UltimateResidence.API.API;
-import me.DevTec.UltimateResidence.API.Position;
 import me.DevTec.UltimateResidence.API.Residence;
 import me.DevTec.UltimateResidence.Utils.ResEvents;
-import me.Straiker123.TheAPI;
 
 public class SubzoneCmd {
 
@@ -21,7 +20,7 @@ public class SubzoneCmd {
 		}
 
 			if(ResEvents.locs.containsKey(s.getName()) && ResEvents.locs.get(s.getName()).length==2) {
-				Residence r = API.getResidence(ResEvents.locs.get(s.getName())[0].getWorld(),new Position(ResEvents.locs.get(s.getName())[0]));
+				Residence r = API.getResidence(ResEvents.locs.get(s.getName())[0]);
 				if(r==null) {
 					TheAPI.msg(URCMD.d+"Subzone isn't in residence.", s);
 					return;
@@ -35,7 +34,8 @@ public class SubzoneCmd {
 					TheAPI.msg(URCMD.d+"Subzone &c"+args[1]+" &7in residence &c"+r.getName()+" &7already exists.", s);
 					return;
 				}
-				if(API.isInsideSubzone(ResEvents.locs.get(s.getName())[0].getWorld(),new Position(ResEvents.locs.get(s.getName())[0]),new Position(ResEvents.locs.get(s.getName())[1]))) {
+				Residence res = API.getResidence(ResEvents.locs.get(s.getName())[0]);
+				if(API.isCollidingWithSubzone(res.getSubzone(ResEvents.locs.get(s.getName())[0]), res.getSubzone(ResEvents.locs.get(s.getName())[1]))) {
 					TheAPI.msg(URCMD.d+"Subzone &c"+args[1]+" &7is colliding with another subzone.", s);
 					return;
 				}

@@ -1,22 +1,22 @@
 package me.DevTec.UltimateResidence.Events;
 
-import org.bukkit.Location;
 import org.bukkit.entity.Player;
 import org.bukkit.event.Event;
 import org.bukkit.event.HandlerList;
 
+import me.DevTec.Other.Position;
 import me.DevTec.UltimateResidence.Loader;
-import me.DevTec.UltimateResidence.API.Residence;
 import me.DevTec.UltimateResidence.API.API;
+import me.DevTec.UltimateResidence.API.Residence;
 import me.DevTec.UltimateResidence.API.Subzone;
 
 public class SubzoneLeaveEvent extends Event {
 	private Player s;
 	private Subzone r;
-	private Location loc;
+	private Position loc;
 	private String ac,chat;
 	private String[] title;
-	public SubzoneLeaveEvent(Subzone r, Location l, Player s) {
+	public SubzoneLeaveEvent(Subzone r, Position l, Player s) {
 		this.s=s;
 		this.r=r;
 		loc=l;
@@ -32,7 +32,7 @@ public class SubzoneLeaveEvent extends Event {
 		}
 	}
 	
-	public Location getLocation() {
+	public Position getPosition() {
 		return loc;
 	}
 

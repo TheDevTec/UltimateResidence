@@ -1,25 +1,36 @@
 package me.DevTec.UltimateResidence;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 
 import org.bukkit.Bukkit;
+import org.bukkit.GameMode;
 import org.bukkit.World;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.java.JavaPlugin;
 
+import com.google.common.collect.Lists;
+
+import me.DevTec.ConfigAPI;
+import me.DevTec.TheAPI;
+import me.DevTec.Scheduler.Tasker;
 import me.DevTec.UltimateResidence.API.API;
 import me.DevTec.UltimateResidence.API.Data;
+import me.DevTec.UltimateResidence.API.Flag;
+import me.DevTec.UltimateResidence.API.Residence;
+import me.DevTec.UltimateResidence.API.Subzone;
 import me.DevTec.UltimateResidence.Commands.URCMD;
 import me.DevTec.UltimateResidence.Utils.ResEvents;
-import me.Straiker123.ConfigAPI;
-import me.Straiker123.TheAPI;
 
 public class Loader extends JavaPlugin {
+	public static Loader a;
 	public static boolean loaded;
 	public static ConfigAPI c = new ConfigAPI("UltimateResidence", "Config");
 	public static ConfigAPI g = new ConfigAPI("UltimateResidence","Groups");
 	public static HashMap<World, ConfigAPI> map = new HashMap<World, ConfigAPI>();
+	public static ArrayList<String> debugging = Lists.newArrayList();
 	public void onEnable() {
+		a=this;
 		g.addDefault("Groups.default.Residences", 5);
 		g.addDefault("Groups.default.SubResidences", 3);
 		g.addDefault("Groups.default.Size", "50x50");
@@ -89,6 +100,39 @@ public class Loader extends JavaPlugin {
 				
 		Bukkit.getPluginCommand("UltimateResidence").setExecutor(new URCMD());
 		Bukkit.getPluginManager().registerEvents(new ResEvents(), this);
+		new Tasker() {
+			public void run() {
+				try {
+				for(Player p : TheAPI.getOnlinePlayers()) {
+					if(p.getGameMode() == GameMode.CREATIVE)continue;
+					Residence r = API.getResidence(p);
+					if(r==null)continue;
+					Subzone z = r.getSubzone(p);
+				if(z!=null) {
+						if(z.getFlag(Flag.HEAL)||z.getPlayerFlag(Flag.HEAL,p.getName())) {
+							@SuppressWarnings("deprecation")
+							double max = p.getMaxHealth();
+							if(p.getHealth() !=max)
+							p.setHealth((p.getHealth()+2) <max ? p.getHealth()+2 :max);
+					}
+					if(z.getFlag(Flag.FEED)||z.getPlayerFlag(Flag.FEED,p.getName())) {
+							if(p.getFoodLevel() !=20)
+							p.setFoodLevel((p.getFoodLevel()+2) < 20 ? p.getFoodLevel()+2 : 20);
+						}
+					return;
+				}
+		if(r.getFlag(Flag.HEAL)||r.getPlayerFlag(Flag.HEAL,p.getName())) {
+			@SuppressWarnings("deprecation")
+			double max = p.getMaxHealth();
+				if(p.getHealth() !=max)
+				p.setHealth((p.getHealth()+2) <max ? p.getHealth()+2 :max);
+		}
+		if(r.getFlag(Flag.FEED)||r.getPlayerFlag(Flag.FEED,p.getName())) {
+				if(p.getFoodLevel() !=20)
+				p.setFoodLevel((p.getFoodLevel()+2) < 20 ? p.getFoodLevel()+2 : 20);
+			}}}catch(Exception er) {}
+			}
+		}.repeatingAsync(0,10);
 	}
 	
 	public void onDisable() {

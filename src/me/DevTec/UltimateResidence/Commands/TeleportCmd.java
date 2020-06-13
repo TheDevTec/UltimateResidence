@@ -3,10 +3,10 @@ package me.DevTec.UltimateResidence.Commands;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
+import me.DevTec.TheAPI;
+import me.DevTec.UltimateResidence.API.API;
 import me.DevTec.UltimateResidence.API.Residence;
 import me.DevTec.UltimateResidence.API.Subzone;
-import me.DevTec.UltimateResidence.API.API;
-import me.Straiker123.TheAPI;
 
 public class TeleportCmd {
 
@@ -32,11 +32,11 @@ public class TeleportCmd {
 				TheAPI.msg(URCMD.d+"Subzone &c"+name[1]+" &7doesn't exist.", s);
 				return;
 			}
-			((Player)s).teleport(z.getTeleportLocation());
+			((Player)s).teleport(z.getSpawn().toLocation());
 			TheAPI.msg(URCMD.d+"Teleported to the subzone &a"+name[1]+"&7.", s);
 			return;
 		}
-		((Player)s).teleport(res.getTeleportLocation());
+		((Player)s).teleport(res.getSpawn().toLocation());
 		TheAPI.msg(URCMD.d+"Teleported to the residence &a"+name[0]+"&7.", s);
 		return;
 		}
@@ -60,12 +60,12 @@ public class TeleportCmd {
 				TheAPI.msg(URCMD.d+"Subzone &c"+name[1]+" &7doesn't exist.", s);
 				return;
 			}
-			p.teleport(z.getTeleportLocation());
+			p.teleport(z.getSpawn().toLocation());
 			TheAPI.msg(URCMD.d+"Teleported to the subzone &a"+name[1]+"&7.", p);
 			TheAPI.msg(URCMD.d+"Player &a"+p.getName()+" &7teleported to the subzone &a"+name[1]+"&7.", s);
 			return;
 		}
-		p.teleport(res.getTeleportLocation());
+		p.teleport(res.getSpawn().toLocation());
 		TheAPI.msg(URCMD.d+"Teleported to the residence &a"+name[0]+"&7.", p);
 		TheAPI.msg(URCMD.d+"Player &a"+p.getName()+" &7teleported to the residence &a"+name[0]+"&7.", s);
 		return;

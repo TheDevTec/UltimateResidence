@@ -6,11 +6,10 @@ import java.util.List;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
+import me.DevTec.TheAPI;
 import me.DevTec.UltimateResidence.API.API;
 import me.DevTec.UltimateResidence.API.Residence;
-import me.DevTec.UltimateResidence.API.ResidenceFlag;
 import me.DevTec.UltimateResidence.API.Subzone;
-import me.Straiker123.TheAPI;
 
 public class InfoCmd {
 
@@ -95,10 +94,11 @@ public class InfoCmd {
 		return;
 	}
 
-	private String constructFlags(List<ResidenceFlag> flags) {
+	private String constructFlags(List<String> list) {
 		List<String> a = new ArrayList<String>();
-		for(ResidenceFlag f : flags) {
-			a.add((f.getValue()?"&a" : "&c")+f.getFlag().name());
+		for(String f : list) {
+			String[] d = f.split(":");
+			a.add((Boolean.valueOf(d[1])?"&a" : "&c")+d[0]);
 		}
 		return TheAPI.getStringUtils().join(a,"&7, ");
 	}

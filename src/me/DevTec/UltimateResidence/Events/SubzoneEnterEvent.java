@@ -1,24 +1,25 @@
 package me.DevTec.UltimateResidence.Events;
 
 import org.bukkit.entity.Player;
-import org.bukkit.event.Cancellable;
 import org.bukkit.event.Event;
 import org.bukkit.event.HandlerList;
 
+import me.DevTec.Other.Position;
 import me.DevTec.UltimateResidence.Loader;
-import me.DevTec.UltimateResidence.API.Residence;
 import me.DevTec.UltimateResidence.API.API;
+import me.DevTec.UltimateResidence.API.Residence;
 import me.DevTec.UltimateResidence.API.Subzone;
 
-public class SubzoneEnterEvent extends Event implements Cancellable {
+public class SubzoneEnterEvent extends Event {
 	private Player s;
-	private boolean c;
 	private Subzone r;
 	private String ac,chat;
+	private Position f;
 	private String[] title;
-	public SubzoneEnterEvent(Subzone r, Player s) {
+	public SubzoneEnterEvent(Subzone r, Position c, Player s) {
 		this.s=s;
 		this.r=r;
+		f=c;
 		String group = API.getData(s.getName()).getGroup().getName();
 		if(Loader.g.getBoolean("Groups."+group+".Chat.Use")) {
 			setChat(Loader.g.getString("Groups."+group+".Chat.Enter"));
@@ -29,6 +30,10 @@ public class SubzoneEnterEvent extends Event implements Cancellable {
 		if(Loader.g.getBoolean("Groups."+group+".ActionBar.Use")) {
 			setActionBar(Loader.g.getString("Groups."+group+".ActionBar.Enter"));
 		}
+	}
+	
+	public Position getFrom() {
+		return f;
 	}
 	
 	public void setTitle(String a, String b) {
@@ -77,15 +82,6 @@ public class SubzoneEnterEvent extends Event implements Cancellable {
 
 	public static HandlerList getHandlerList() {
 		return a;
-	}
-	@Override
-	public boolean isCancelled() {
-		return c;
-	}
-
-	@Override
-	public void setCancelled(boolean cancel) {
-		c=cancel;
 	}
 
 }

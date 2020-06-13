@@ -2,21 +2,27 @@ package me.DevTec.UltimateResidence.API;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
+import java.util.concurrent.Callable;
 
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.World;
 import org.bukkit.entity.Player;
 
+import com.google.common.collect.Maps;
+
+import me.DevTec.ConfigAPI;
+import me.DevTec.TheAPI;
+import me.DevTec.Other.Position;
 import me.DevTec.UltimateResidence.Loader;
+import me.DevTec.UltimateResidence.Utils.Executor;
 import me.DevTec.UltimateResidence.Utils.Group.SizeType;
 import me.DevTec.UltimateResidence.Utils.ResEvents;
-import me.Straiker123.ConfigAPI;
-import me.Straiker123.TheAPI;
 
 public class API {
-	
+	private static HashMap<String, Residence> cache = Maps.newHashMap();
 	public static void reload() {
 		for(World w : Loader.map.keySet()) 
 			Loader.map.get(w).reload();
@@ -25,8 +31,14 @@ public class API {
 	}
 	
 	public static Residence getResidence(World world, String residence) {
-		if(getResidenceOwner(world,residence)!=null)
-		return new Residence(residence,world,getResidenceOwner(world,residence));
+		if(getResidenceOwner(world,residence)!=null) {
+			Residence r = cache.containsKey(residence) ? cache.get(residence) : null;
+			if(r==null) {
+				r=new Residence(residence,world,getResidenceOwner(world,residence));
+				cache.put(residence, r);
+			}
+			return r;
+		}
 		return null;
 	}
 
@@ -61,13 +73,13 @@ public class API {
 	}
 	
 	public static Residence getResidence(Player player) {
-		return getResidence(player.getWorld(),new Position(player.getLocation()));
+		return getResidence(new Position(player.getLocation()));
 	}
 
 	private static List<String> getResidences(World world) {
 		List<String> a = new ArrayList<String>();
 		if(new ConfigAPI("UltimateResidence","Data/"+world.getName()).existPath("Residence"))
-		for(String s: Loader.getData(world).getConfigurationSection("Residence",false))
+		for(String s: Loader.getData(world).getKeys("Residence"))
 			a.add(s);
 		return a;
 	}
@@ -75,8 +87,8 @@ public class API {
 	public static void create(World world, String owner,String res) {
 		ConfigAPI a = Loader.getData(world);
 		a.set("Residence."+res+".Corners", 
-				TheAPI.getStringUtils().getLocationAsString(ResEvents.locs.get(owner)[0])+":"+
-				TheAPI.getStringUtils().getLocationAsString(ResEvents.locs.get(owner)[1]));
+				ResEvents.locs.get(owner)[0].toString()+":"+
+				ResEvents.locs.get(owner)[1].toString());
 		a.set("Residence."+res+".Owner", owner);
 		a.set("Residence."+res+".Members", Arrays.asList(owner));
 		a.set("Residence."+res+".Limit.Size", getData(owner).getGroup().getMaxSize(SizeType.X)+"x"+
@@ -85,7 +97,15 @@ public class API {
 		a.set("Residence."+res+".Tp"
 				,TheAPI.getStringUtils().getLocationAsString(TheAPI.getPlayer(owner).getLocation()));
 		a.save();
-		getData(owner).addResidence(new Residence(res, world, owner));
+		Residence r = new Residence(res, world, owner);
+		r.setFlag(Flag.MOVE, true);
+		r.setFlag(Flag.FLY, true);
+		r.setFlag(Flag.DOOR, true);
+		r.setFlag(Flag.ANIMALSPAWN, true);
+		r.setFlag(Flag.MONSTERSPAWN, true);
+		r.setFlag(Flag.MONSTERKILL, true);
+		cache.put(res, r); //default flags
+		getData(owner).addResidence(r);
 	}
 	
 	public static boolean isBigSize(String player, Location l1, Location l2) {
@@ -94,124 +114,41 @@ public class API {
 		return getData(player).getGroup().getMaxSize(SizeType.X) < x||getData(player).getGroup().getMaxSize(SizeType.X) < z;
 	}
 
-	public static Data getData(String player) {
-		return new Data(player);
-	}
-
 	public static void delete(String owner,String res) {
 		getData(owner).removeResidence(getResidenceByName(res));
 		Loader.getData(getResidenceByName(res).getWorld()).set("Residence."+res,null);
+		cache.remove(res);
+	}
+	
+	public static Residence getResidence(Position location) {
+	   return new Executor<Residence>().get(new Callable<Residence>() {
+	    	@Override
+	        public Residence call() {
+	    		Residence rr=null;
+	        	for(String s : getResidences(location.getWorld())) {
+	    			Residence r = getResidence(location.getWorld(),s);
+	    			if(r.inside(location)) {
+	    				rr=r;
+	    				break;
+	    			}
+	    		}
+	        	return rr;
+	        }});
 	}
 
 	public static List<String> getResidences(String owner) {
 		return getData(owner).getResidences();
 	}
 
-	public static boolean isColliding(World world, Position x,Position x2) {
-		boolean is = false;
-		for(String s : getResidences(world)) {
-			Residence r = getResidence(world,s);
-			int topBlockX = (int)(x.x() < x2.x() ? x2.x() : x.x());
-	        int bottomBlockX = (int)(x.x() > x2.x() ? x2.x() : x.x());
-	        int topBlockY = (int)(x.y() < x2.y() ? x2.y() : x.y());
-	        int bottomBlockY = (int)(x.y() > x2.y() ? x2.y() : x.y());
-	        int topBlockZ = (int)(x.z() < x2.z() ? x2.z() : x.z());
-	        int bottomBlockZ = (int)(x.z() > x2.z() ? x2.z() : x.z());
-	        for(int xx = bottomBlockX; xx <= topBlockX; xx++){
-	            for(int zz = bottomBlockZ; zz <= topBlockZ; zz++){
-	                for(int yy = bottomBlockY; yy <= topBlockY; yy++){
-	                if(r.inResidence(new Position(xx,yy,zz))) {
-				is=true;
-				break;
-			}
-			}}}}
-		return is;
+	public static boolean isColliding(Residence res, Residence anotherOne) {
+		   return res.inside(anotherOne.getCorners()[0])&&res.inside(anotherOne.getCorners()[1]);
 	}
 
-	public static Residence getResidence(World w,Position location) {
-		Residence find = null;
-		for(String s : getResidences(w)) {
-
-			Residence a= getResidence(w,s);
-			if(a!=null)
-			if(a.inResidence(location)) {
-				find=a;
-				break;
-			}
-		}
-		return find;
-	}
-	
-	public static boolean isInsideResidence(World w, Position x, Position x2) {
-		boolean is = true;
-		String r = null;
-		int topBlockX = (int)(x.x() < x2.x() ? x2.x() : x.x());
-        int bottomBlockX = (int)(x.x() > x2.x() ? x2.x() : x.x());
-        int topBlockY = (int)(x.y() < x2.y() ? x2.y() : x.y());
-        int bottomBlockY = (int)(x.y() > x2.y() ? x2.y() : x.y());
-        int topBlockZ = (int)(x.z() < x2.z() ? x2.z() : x.z());
-        int bottomBlockZ = (int)(x.z() > x2.z() ? x2.z() : x.z());
-        for(int xx = bottomBlockX; xx <= topBlockX; xx++){
-            for(int zz = bottomBlockZ; zz <= topBlockZ; zz++){
-                for(int yy = bottomBlockY; yy <= topBlockY; yy++){
-                	Position l = new Position(xx,yy,zz);
-    				Residence a = getResidence(w,l);
-    				if(a==null) {
-    					is=false;
-    					break;
-    				}
-    				if(a.inResidence(l)) {
-    					if(r==null)r=a.getName();
-    					if(!r.equals(a.getName())) {
-    						is=false;
-    						break;
-    					}
-    				}else {
-    					is=false;
-    					break;
-    				}
-                }
-            }
-        }
-		return is;
-	}
-	//must be inside residence
-	public static boolean isInsideSubzone(World w, Position x, Position x2) {
-		boolean is = true;
-		String r = null;
-		String f = null;
-		int topBlockX = (int)(x.x() < x2.x() ? x2.x() : x.x());
-        int bottomBlockX = (int)(x.x() > x2.x() ? x2.x() : x.x());
-        int topBlockY = (int)(x.y() < x2.y() ? x2.y() : x.y());
-        int bottomBlockY = (int)(x.y() > x2.y() ? x2.y() : x.y());
-        int topBlockZ = (int)(x.z() < x2.z() ? x2.z() : x.z());
-        int bottomBlockZ = (int)(x.z() > x2.z() ? x2.z() : x.z());
-        for(int xx = bottomBlockX; xx <= topBlockX; xx++){
-            for(int zz = bottomBlockZ; zz <= topBlockZ; zz++){
-                for(int yy = bottomBlockY; yy <= topBlockY; yy++){
-                	Position l = new Position(xx,yy,zz);
-    				Residence a = getResidence(w,l);
-    				if(a!=null)
-    				if(r==null)r=a.getName();
-    				if(a==null||!r.equals(a.getName())) {
-    					is=false;
-    					break;
-    				}
-    				if(a.inResidence(l)) {
-    					Subzone t = a.getSubzone(l);
-    					if(t!=null)
-    					if(f==null)f=t.getName();
-    					if(t==null||!t.getName().equals(f)) {
-    						is=false;
-    						break;
-    					}
-    				}else {
-    					is=false;
-    					break;
-    				}
-                }
-            }}
-		return is;
+	public static boolean isCollidingWithSubzone(Subzone sub, Subzone anotherOne) {
+		   return sub.inside(anotherOne.getCorners()[0])&&sub.inside(anotherOne.getCorners()[1]);
 	}
 
+	public static Data getData(String player) {
+		return new Data(player);
+	}
 }

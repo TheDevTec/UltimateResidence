@@ -1,18 +1,16 @@
 package me.DevTec.UltimateResidence.Events;
 
 import org.bukkit.entity.Player;
-import org.bukkit.event.Cancellable;
 import org.bukkit.event.Event;
 import org.bukkit.event.HandlerList;
 
 import me.DevTec.UltimateResidence.Loader;
-import me.DevTec.UltimateResidence.API.Residence;
 import me.DevTec.UltimateResidence.API.API;
+import me.DevTec.UltimateResidence.API.Residence;
 import me.DevTec.UltimateResidence.API.Subzone;
 
-public class SubzoneSwitchEvent extends Event implements Cancellable {
+public class SubzoneSwitchEvent extends Event {
 	private Player s;
-	private boolean c;
 	private Subzone r;
 	private String ac,chat;
 	private String[] title;
@@ -78,15 +76,4 @@ public class SubzoneSwitchEvent extends Event implements Cancellable {
 	public static HandlerList getHandlerList() {
 		return a;
 	}
-
-	@Override
-	public boolean isCancelled() {
-		return c;
-	}
-
-	@Override
-	public void setCancelled(boolean cancel) {
-		c=cancel;
-	}
-
 }

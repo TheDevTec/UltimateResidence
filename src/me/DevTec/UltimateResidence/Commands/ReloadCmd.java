@@ -3,10 +3,10 @@ package me.DevTec.UltimateResidence.Commands;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
+import me.DevTec.TheAPI;
 import me.DevTec.UltimateResidence.Loader;
-import me.DevTec.UltimateResidence.API.Data;
 import me.DevTec.UltimateResidence.API.API;
-import me.Straiker123.TheAPI;
+import me.DevTec.UltimateResidence.API.Data;
 
 public class ReloadCmd {
 	public ReloadCmd(CommandSender s) {

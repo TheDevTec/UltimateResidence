@@ -2,10 +2,9 @@ package me.DevTec.UltimateResidence.Commands;
 
 import org.bukkit.entity.Player;
 
+import me.DevTec.TheAPI;
 import me.DevTec.UltimateResidence.API.API;
-import me.DevTec.UltimateResidence.API.Position;
 import me.DevTec.UltimateResidence.Utils.ResEvents;
-import me.Straiker123.TheAPI;
 
 public class CreateCmd {
 
@@ -31,7 +30,7 @@ public class CreateCmd {
 			}
 			
 			if(ResEvents.locs.containsKey(s.getName()) && ResEvents.locs.get(s.getName()).length==2) {
-			if(API.isColliding(((Player)s).getWorld(),new Position(ResEvents.locs.get(s.getName())[0]),new Position(ResEvents.locs.get(s.getName())[1]))) {
+			if(API.isColliding(API.getResidence(ResEvents.locs.get(s.getName())[0]),API.getResidence(ResEvents.locs.get(s.getName())[1]))) {
 				TheAPI.msg(URCMD.d+"Residence &c"+args[1]+" &7is colliding with another one.", s);
 				return;
 			}

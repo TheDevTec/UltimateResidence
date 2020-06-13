@@ -3,8 +3,8 @@ package me.DevTec.UltimateResidence.API;
 import java.util.ArrayList;
 import java.util.List;
 
+import me.DevTec.ConfigAPI;
 import me.DevTec.UltimateResidence.Utils.Group;
-import me.Straiker123.ConfigAPI;
 
 public class Data {
 	private String s;
