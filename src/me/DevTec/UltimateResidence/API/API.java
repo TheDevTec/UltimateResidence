@@ -4,7 +4,6 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
-import java.util.concurrent.Callable;
 
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
@@ -17,7 +16,6 @@ import me.DevTec.ConfigAPI;
 import me.DevTec.TheAPI;
 import me.DevTec.Other.Position;
 import me.DevTec.UltimateResidence.Loader;
-import me.DevTec.UltimateResidence.Utils.Executor;
 import me.DevTec.UltimateResidence.Utils.Group.SizeType;
 import me.DevTec.UltimateResidence.Utils.ResEvents;
 
@@ -120,20 +118,18 @@ public class API {
 		cache.remove(res);
 	}
 	
-	public static Residence getResidence(Position location) {
-	   return new Executor<Residence>().get(new Callable<Residence>() {
-	    	@Override
-	        public Residence call() {
-	    		Residence rr=null;
-	        	for(String s : getResidences(location.getWorld())) {
-	    			Residence r = getResidence(location.getWorld(),s);
-	    			if(r.inside(location)) {
-	    				rr=r;
-	    				break;
-	    			}
-	    		}
-	        	return rr;
-	        }});
+public static Residence getResidence(Position location) {
+    		Residence rr=null;
+    		ConfigAPI ac = Loader.getData(location.getWorld());
+        	for(String s : getResidences(location.getWorld())) {
+        		String[] sd = ac.getString("Residence."+s+".Corners").split(":");
+		Position[] l=new Position[] {Position.fromString(sd[0]),Position.fromString(sd[1])};
+		if(TheAPI.getBlocksAPI().isInside(location, l[0], l[1])) {
+			rr = getResidence(location.getWorld(),s);
+			break;
+		}
+	}
+	return rr;
 	}
 
 	public static List<String> getResidences(String owner) {
