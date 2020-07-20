@@ -83,7 +83,7 @@ public class Subzone {
 	}
 
 	public boolean getFlag(Flag f){
-		return new Executor<Boolean>().get(new Callable<Boolean>() {
+		return (Boolean)new Executor(new Callable<Boolean>() {
 			public Boolean call() {
 				boolean fr = false;
 				for(String a : getFlags()) {
@@ -95,12 +95,12 @@ public class Subzone {
 				}
 				return fr;
 			}
-		});
+		}).get();
 	}
 
 	public boolean getPlayerFlag(Flag f, String player){
 		if(getMembers().contains(player))return true; //members has all flags!
-		return new Executor<Boolean>().get(new Callable<Boolean>() {
+		return (Boolean) new Executor(new Callable<Boolean>() {
 			public Boolean call() {
 				boolean fr = false;
 				if(getMembers().contains(player))return true; //members has all flags!
@@ -113,7 +113,7 @@ public class Subzone {
 				}
 				return fr;
 			}
-		});
+		}).get();
 	}
 	public List<String> getFlags(){
 		return a;

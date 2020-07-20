@@ -1,7 +1,5 @@
 package me.DevTec.UltimateResidence.Utils;
 
-import java.time.Duration;
-import java.time.Instant;
 import java.util.HashMap;
 import java.util.concurrent.Callable;
 
@@ -14,6 +12,7 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.Action;
+import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.event.block.BlockFadeEvent;
 import org.bukkit.event.block.BlockPlaceEvent;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
@@ -133,7 +132,7 @@ public class ResEvents implements Listener {
 					return;
 				}else {
 					if(Loader.c.getBoolean("ShowNoPermsMsg"))
-					s("&c&lUResidence &8&l• &7You do not have permission &cFLY &7here.", s);
+					s("&c&lUResidence &8&lÂ» &7You do not have permission &cFLY &7here.", s);
 					e.setCancelled(true);
 					return;
 				}
@@ -142,7 +141,7 @@ public class ResEvents implements Listener {
 				return;
 			}else {
 				if(Loader.c.getBoolean("ShowNoPermsMsg"))
-				s("&c&lUResidence &8&l• &7You do not have permission &cFLY &7here.", s);
+				s("&c&lUResidence &8&lÂ» &7You do not have permission &cFLY &7here.", s);
 				e.setCancelled(true);
 				return;
 			}
@@ -161,7 +160,7 @@ public class ResEvents implements Listener {
 							return;
 						}else {
 							if(Loader.c.getBoolean("ShowNoPermsMsg"))
-						s("&c&lUResidence &8&l• &7You do not have permission &cUSE &7here.", s);
+						s("&c&lUResidence &8&lÂ» &7You do not have permission &cUSE &7here.", s);
 			                e.setCancelled(true);
 			            return;
 				}
@@ -170,7 +169,7 @@ public class ResEvents implements Listener {
 						return;
 					}else {
 						if(Loader.c.getBoolean("ShowNoPermsMsg"))
-					s("&c&lUResidence &8&l• &7You do not have permission &cUSE &7here.", s);
+					s("&c&lUResidence &8&lÂ» &7You do not have permission &cUSE &7here.", s);
 		                e.setCancelled(true);
 		           return;
 			}
@@ -186,7 +185,7 @@ public class ResEvents implements Listener {
 								return;
 							}else {
 								if(Loader.c.getBoolean("ShowNoPermsMsg"))
-								s("&c&lUResidence &8&l• &7You do not have permission &cDOOR &7here.", s);
+								s("&c&lUResidence &8&lÂ» &7You do not have permission &cDOOR &7here.", s);
 								e.setCancelled(true);
 								return;
 							}
@@ -196,7 +195,7 @@ public class ResEvents implements Listener {
 									return;
 								}else {
 									if(Loader.c.getBoolean("ShowNoPermsMsg"))
-									s("&c&lUResidence &8&l• &7You do not have permission &CWORKBENCH &7here.", s);
+									s("&c&lUResidence &8&lÂ» &7You do not have permission &CWORKBENCH &7here.", s);
 									e.setCancelled(true);
 									return;
 								}
@@ -206,7 +205,7 @@ public class ResEvents implements Listener {
 									return;
 								}else {
 									if(Loader.c.getBoolean("ShowNoPermsMsg"))
-									s("&c&lUResidence &8&l• &7You do not have permission &CANVIL &7here.", s);
+									s("&c&lUResidence &8&lÂ» &7You do not have permission &CANVIL &7here.", s);
 									e.setCancelled(true);
 									return;
 								}
@@ -215,7 +214,7 @@ public class ResEvents implements Listener {
 									return;
 								}else {
 									if(Loader.c.getBoolean("ShowNoPermsMsg"))
-									s("&c&lUResidence &8&l• &7You do not have permission &cCONTAINER &7here.", s);
+									s("&c&lUResidence &8&lÂ» &7You do not have permission &cCONTAINER &7here.", s);
 									e.setCancelled(true);
 									return;
 								}
@@ -233,7 +232,7 @@ public class ResEvents implements Listener {
 								return;
 							}else {
 								if(Loader.c.getBoolean("ShowNoPermsMsg"))
-							s("&c&lUResidence &8&l• &7You do not have permission &cUSE &7here.", s);
+							s("&c&lUResidence &8&lÂ» &7You do not have permission &cUSE &7here.", s);
 							e.setCancelled(true);
 							return;
 					}}else
@@ -242,7 +241,7 @@ public class ResEvents implements Listener {
 							return;
 						}else {
 							if(Loader.c.getBoolean("ShowNoPermsMsg"))
-							s("&c&lUResidence &8&l• &7You do not have permission &cDOOR &7here.", s);
+							s("&c&lUResidence &8&lÂ» &7You do not have permission &cDOOR &7here.", s);
 							e.setCancelled(true);
 							return;
 						}
@@ -252,7 +251,7 @@ public class ResEvents implements Listener {
 								return;
 							}else {
 								if(Loader.c.getBoolean("ShowNoPermsMsg"))
-								s("&c&lUResidence &8&l• &7You do not have permission &cWORKBENCH &7here.", s);
+								s("&c&lUResidence &8&lÂ» &7You do not have permission &cWORKBENCH &7here.", s);
 								e.setCancelled(true);
 								return;
 							}
@@ -262,7 +261,7 @@ public class ResEvents implements Listener {
 								return;
 							}else {
 								if(Loader.c.getBoolean("ShowNoPermsMsg"))
-								s("&c&lUResidence &8&l• &7You do not have permission &cANVIL &7here.", s);
+								s("&c&lUResidence &8&lÂ» &7You do not have permission &cANVIL &7here.", s);
 								e.setCancelled(true);
 								return;
 							}
@@ -271,7 +270,7 @@ public class ResEvents implements Listener {
 								return;
 							}else {
 								if(Loader.c.getBoolean("ShowNoPermsMsg"))
-								s("&c&lUResidence &8&l• &7You do not have permission &cCONTAINER &7here.", s);
+								s("&c&lUResidence &8&lÂ» &7You do not have permission &cCONTAINER &7here.", s);
 								e.setCancelled(true);
 								return;
 							}
@@ -289,7 +288,7 @@ public class ResEvents implements Listener {
 							return;
 						}else {
 							if(Loader.c.getBoolean("ShowNoPermsMsg"))
-						s("&c&lUResidence &8&l• &7You do not have permission &cUSE &7here.", s);
+						s("&c&lUResidence &8&lÂ» &7You do not have permission &cUSE &7here.", s);
 						e.setCancelled(true);
 						return;
 					}}}}
@@ -305,7 +304,7 @@ public class ResEvents implements Listener {
 					
 					l[1]=a;
 					locs.put(s.getName(),l);
-					TheAPI.msg("&c&lUltimateResidence &8&l» &72# Corner of residence set at X:"+a.getBlockX()+", Y:"+a.getBlockY()+", Z:"+a.getBlockZ(), s);
+					TheAPI.msg("&c&lUltimateResidence &8&lÂ» &72# Corner of residence set at X:"+a.getBlockX()+", Y:"+a.getBlockY()+", Z:"+a.getBlockZ(), s);
 				}
 				if(e.getAction()==Action.LEFT_CLICK_BLOCK) {
 					wait.put(s, System.currentTimeMillis()/1000);
@@ -314,7 +313,7 @@ public class ResEvents implements Listener {
 					Position a = new Position(e.getClickedBlock().getLocation());
 					l[0]=a;
 					locs.put(s.getName(),l);
-					TheAPI.msg("&c&lUltimateResidence &8&l» &71# Corner of residence set at X:"+a.getBlockX()+", Y:"+a.getBlockY()+", Z:"+a.getBlockZ(), s);
+					TheAPI.msg("&c&lUltimateResidence &8&lÂ» &71# Corner of residence set at X:"+a.getBlockX()+", Y:"+a.getBlockY()+", Z:"+a.getBlockZ(), s);
 				}}
 			}
 	}
@@ -327,13 +326,14 @@ public class ResEvents implements Listener {
 	
 	@EventHandler(priority = EventPriority.LOWEST)
 	public void onMove(PlayerMoveEvent e) {
-		Instant aa= Instant.now();
+		long nano = System.currentTimeMillis();
 		Location from = e.getFrom(), to = e.getTo();
-		new Tasker() {
-			public void run() {
+		Player p = e.getPlayer();
+		boolean c = (Boolean)new Executor(new Callable<Boolean>() {
+			@Override
+			public Boolean call() {
 		if(Math.abs(from.getBlockX() - to.getBlockX()) > 0 || Math.abs(from.getBlockZ() - to.getBlockZ()) > 0 
 	       		 || Math.abs(from.getBlockY() - to.getBlockY()) > 0) {
-		    				Player p = e.getPlayer();
 		    			Residence r = API.getResidence(new Position(to));
 		    			Subzone z = r != null ? r.getSubzone(p): null;
 		    			boolean cancel = false;
@@ -469,44 +469,49 @@ public class ResEvents implements Listener {
 		    						TheAPI.msg(es.getChat().replace("%player", p.getName()).replace("%residence", rr.getName())
 		    								.replace("%owner", rr.getOwner()), p);
 		    				}}}
-		    				if(cancel)
-		    					p.teleport(from);
+		    				return cancel;
 		        }
-		Instant bb = Instant.now();
+		return false;
+		}}).get();
+		if(c)e.setCancelled(true);
+		nano=System.currentTimeMillis()-nano;
+		if(nano!=0)
 		for(String s : Loader.debugging)
 			if(TheAPI.getPlayer(s)!=null)
-				TheAPI.msg("Move event called in "+Duration.between(aa,bb).toMillis()+"ms", TheAPI.getPlayer(s));
-		}}.runAsync();
+				TheAPI.msg("Move event done in "+nano, TheAPI.getPlayer(s));
 		}
 
 	@EventHandler
 	public void onDamage(PlayerInteractAtEntityEvent e) {
 		Player s = e.getPlayer();
-		e.setCancelled(new Executor<Boolean>().get(new Callable<Boolean>() {
+		if(s.hasPermission("residence.admin")||e.isCancelled())return;
+		Position clicked = new Position(e.getRightClicked().getLocation());
+		e.setCancelled((Boolean)new Executor(new Callable<Boolean>() {
 	        public Boolean call() {
-		Residence r= API.getResidence(new Position(e.getRightClicked().getLocation()));
+		Residence r= API.getResidence(clicked);
 		if(r!= null) {
-			Subzone z = r.getSubzone(e.getRightClicked().getLocation());	
+			Subzone z = r.getSubzone(clicked);	
 			if(z!=null) {
-				if(!s.hasPermission("residence.admin"))
+				if(s.hasPermission("residence.admin"))return true;
 				if(!z.getFlag(Flag.INTERACT)&&!z.getPlayerFlag(Flag.INTERACT,s.getName())) {
 					if(Loader.c.getBoolean("ShowNoPermsMsg"))
-					s("&c&lUResidence &8&l• &7You do not have permission &cINTERACT &7here.", s);
+					s("&c&lUResidence &8&lÂ» &7You do not have permission &cINTERACT &7here.", s);
 					return true;
 				}
 			}else {
-				if(!s.hasPermission("residence.admin"))
+				if(s.hasPermission("residence.admin"))return true;
 				if(!r.getFlag(Flag.INTERACT)&&!r.getPlayerFlag(Flag.INTERACT,s.getName())) {
 					if(Loader.c.getBoolean("ShowNoPermsMsg"))
-					s("&c&lUResidence &8&l• &7You do not have permission &cINTERACT &7here.", s);
+					s("&c&lUResidence &8&lÂ» &7You do not have permission &cINTERACT &7here.", s);
 					return true;
 				}}}
 		return false;
-	}}));}
+	}}).get());
+	}
 	@EventHandler
 	public void onDamage(EntityDamageByEntityEvent e) {
 		if(e.getDamager() instanceof Player||e.getDamager() instanceof Arrow) {
-			e.setCancelled(new Executor<Boolean>().get(new Callable<Boolean>() {
+			e.setCancelled((Boolean)new Executor(new Callable<Boolean>() {
 		        public Boolean call() {
 		Player s = e.getDamager() instanceof Arrow ? (((Arrow)e.getDamager()).getShooter() instanceof Player ? (Player)((Arrow)e.getDamager()).getShooter() : null) : (Player)e.getDamager();
 		if(s==null)return false;
@@ -520,7 +525,7 @@ public class ResEvents implements Listener {
 					if(s.hasPermission("residence.admin"))return false;
 					if(!z.getFlag(f)&&!z.getPlayerFlag(f,s.getName())) {
 						if(Loader.c.getBoolean("ShowNoPermsMsg"))
-						s("&c&lUResidence &8&l• &7You do not have permission &c"+f.name()+" &7here.", s);
+						s("&c&lUResidence &8&lÂ» &7You do not have permission &c"+f.name()+" &7here.", s);
 						e.setCancelled(true);
 						return true;
 					}
@@ -531,42 +536,46 @@ public class ResEvents implements Listener {
 				if(s.hasPermission("residence.admin"))return false;
 				if(!r.getFlag(f)&&!r.getPlayerFlag(f,s.getName())) {
 					if(Loader.c.getBoolean("ShowNoPermsMsg"))
-					s("&c&lUResidence &8&l• &7You do not have permission &c"+f.name()+" &7here.", s);
+					s("&c&lUResidence &8&lÂ» &7You do not have permission &c"+f.name()+" &7here.", s);
 					e.setCancelled(true);
 					return false;
-				}}}return false;}}));
+				}}}return false;}}).get());
 			}}
-	/**@EventHandler(priority = EventPriority.LOWEST)
+	@EventHandler(priority = EventPriority.LOWEST)
 	public void onBreak(BlockBreakEvent e) {
 		Player s = e.getPlayer();
 		if(s.hasPermission("residence.admin")||e.isCancelled())return;
-		e.setCancelled(new Executor<Boolean>().get(new Callable<Boolean>() {
+		e.setCancelled((Boolean)new Executor(new Callable<Boolean>() {
 		        public Boolean call() {
 				    Position p = new Position(e.getBlock().getLocation());
-				    Residence r= API.getResidence(s.getWorld(),p);
+				    Residence r= API.getResidence(p);
 				    if(r!= null) {
 				    	Subzone z = r.getSubzone(p);	
 				    	if(z!=null) {
 				    		if(!z.getFlag(Flag.BREAK) && !z.getPlayerFlag(Flag.BREAK,s.getName())) {
 				    			if(Loader.c.getBoolean("ShowNoPermsMsg"))
-				    			s("&c&lUResidence &8&l• &7You do not have permission &cBREAK &7here.", s);
+				    			s("&c&lUResidence &8&lÂ» &7You do not have permission &cBREAK &7here.", s);
 				    			return true;
 				    		}
 				    	}else {
 				    		if(!r.getFlag(Flag.BREAK)&&!r.getPlayerFlag(Flag.BREAK,s.getName())) {
 				    			if(Loader.c.getBoolean("ShowNoPermsMsg"))
-				    			s("&c&lUResidence &8&l• &7You do not have permission &cBREAK &7here.", s);
+				    			s("&c&lUResidence &8&lÂ» &7You do not have permission &cBREAK &7here.", s);
 				    			return true;
-				    	}}//}
+				    	}}}
 				    return false;
-		        }}));
+				    }}).get());
 		
-	}**/
+	}
 	@EventHandler
 	public void onGod(EntityDamageEvent e) {
 		if(e.getEntity() instanceof Player) {
 		Player s = (Player) e.getEntity();
-		e.setCancelled(new Executor<Boolean>().get(new Callable<Boolean>() {
+		if(s.hasPermission("residence.admin")||e.isCancelled()) {
+			e.setCancelled(true);
+			return;
+		}
+		e.setCancelled((Boolean)new Executor(new Callable<Boolean>() {
 	        public Boolean call() {
 		Residence r= API.getResidence(new Position(e.getEntity().getLocation()));
 		if(r!= null) {
@@ -589,7 +598,7 @@ public class ResEvents implements Listener {
 				if(r.getFlag(Flag.NODAMAGE)||r.getPlayerFlag(Flag.NODAMAGE,s.getName())) {
 					return true;
 				}
-			}}return false;}}));
+			}}return false;}}).get());
 		}}
 	@EventHandler
 	public void onPlace(BlockPlaceEvent e) {
@@ -601,14 +610,14 @@ public class ResEvents implements Listener {
 			if(z!=null) {
 				if(!z.getFlag(Flag.BUILD)&&!z.getPlayerFlag(Flag.BUILD,s.getName())) {
 					if(Loader.c.getBoolean("ShowNoPermsMsg"))
-					s("&c&lUResidence &8&l• &7You do not have permission &cBUILD &7here.", s);
+					s("&c&lUResidence &8&lÂ» &7You do not have permission &cBUILD &7here.", s);
 					e.setCancelled(true);
 					return;
 				}
 			}else {
 				if(!r.getFlag(Flag.BUILD)&&!r.getPlayerFlag(Flag.BUILD,s.getName())) {
 					if(Loader.c.getBoolean("ShowNoPermsMsg"))
-					s("&c&lUResidence &8&l• &7You do not have permission &cBUILD &7here.", s);
+					s("&c&lUResidence &8&lÂ» &7You do not have permission &cBUILD &7here.", s);
 					e.setCancelled(true);
 					return;
 				}

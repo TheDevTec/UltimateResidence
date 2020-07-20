@@ -143,7 +143,7 @@ public class Residence {
 	}
 
 	public boolean getFlag(Flag f){
-		return new Executor<Boolean>().get(new Callable<Boolean>() {
+		return (Boolean)new Executor(new Callable<Boolean>() {
 			public Boolean call() {
 				boolean fr = false;
 				for(String a : getFlags()) {
@@ -155,11 +155,11 @@ public class Residence {
 				}
 				return fr;
 			}
-		});
+		}).get();
 	}
 
 	public boolean getPlayerFlag(Flag f, String player){
-		return new Executor<Boolean>().get(new Callable<Boolean>() {
+		return (Boolean)new Executor(new Callable<Boolean>() {
 			public Boolean call() {
 				boolean fr = false;
 				if(getMembers().contains(player))return true; //members has all flags!
@@ -172,7 +172,7 @@ public class Residence {
 				}
 				return fr;
 			}
-		});
+		}).get();
 	}
 	public List<String> getFlags(){
 		return a;
@@ -222,27 +222,15 @@ public class Residence {
 	}
 	
 	public Subzone getSubzone(Player a) {
-		return getSubzone(a.getLocation());
+		return getSubzone(new Position(a.getLocation()));
 	}
 	
 	public Subzone getSubzone(Location a) {
-		   return new Executor<Subzone>().get(new Callable<Subzone>() {
-		    	@Override
-		        public Subzone call() {
-		    		Subzone d= null;
-		    		for(String s: getSubzones()) {
-		    			Subzone f = getSubzone(s);
-		    			if(f.inside(a)) {
-		    				d=f;
-		    				break;
-		    			}
-		    		}
-		    		return d;
-		        }});
+		return getSubzone(new Position(a));
 	}
 
 	public Subzone getSubzone(Position c) {
-		   return new Executor<Subzone>().get(new Callable<Subzone>() {
+		   return (Subzone)new Executor(new Callable<Subzone>() {
 		    	@Override
 		        public Subzone call() {
 		    		Subzone d= null;
@@ -254,11 +242,11 @@ public class Residence {
 		    			}
 		    		}
 		    		return d;
-		        }});
+		        }}).get();
 	}
 
 	public Subzone getSubzone(String name) {
-		   return new Executor<Subzone>().get(new Callable<Subzone>() {
+		   return (Subzone)new Executor(new Callable<Subzone>() {
 		    	@Override
 		        public Subzone call() {
 		    		if(getSubzones().contains(name)) {
@@ -270,7 +258,7 @@ public class Residence {
 		    		return s;
 		    		}
 		    		return null;
-		        }});
+		        }}).get();
 	}
 
 	public void createSubzone(String string, Position location, Position location2) {

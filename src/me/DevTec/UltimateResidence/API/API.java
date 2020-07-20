@@ -123,8 +123,7 @@ public static Residence getResidence(Position location) {
     		ConfigAPI ac = Loader.getData(location.getWorld());
         	for(String s : getResidences(location.getWorld())) {
         		String[] sd = ac.getString("Residence."+s+".Corners").split(":");
-		Position[] l=new Position[] {Position.fromString(sd[0]),Position.fromString(sd[1])};
-		if(TheAPI.getBlocksAPI().isInside(location, l[0], l[1])) {
+		if(TheAPI.getBlocksAPI().isInside(location, Position.fromString(sd[0]), Position.fromString(sd[1]))) {
 			rr = getResidence(location.getWorld(),s);
 			break;
 		}
