@@ -258,10 +258,11 @@ public class Residence {
 	}
 
 	public void removeSubzone(Subzone z2) {
-		c.set("Subzone."+z2.getName(),null);
+		removeSubzone(z2.getName());
 	}
 
 	public void removeSubzone(String z2) {
+		cache.removeThread(name, z2);
 		c.set("Suzone."+z2,null);
 	}
 
