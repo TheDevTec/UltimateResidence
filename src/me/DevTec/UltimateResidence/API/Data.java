@@ -3,20 +3,16 @@ package me.DevTec.UltimateResidence.API;
 import java.util.ArrayList;
 import java.util.List;
 
-import me.DevTec.ConfigAPI;
+import me.DevTec.TheAPI;
+import me.DevTec.Other.User;
 import me.DevTec.UltimateResidence.Utils.Group;
 
 public class Data {
 	private String s;
-	private ConfigAPI c;
+	private User c;
 	public Data(String player) {
 		s=player;
-		c=new ConfigAPI("UltimateResidence/User",player);
-		c.create();
-	}
-	
-	public ConfigAPI getConfigAPI() {
-		return c;
+		c=TheAPI.getUser(player);
 	}
 	
 	public String getName() {

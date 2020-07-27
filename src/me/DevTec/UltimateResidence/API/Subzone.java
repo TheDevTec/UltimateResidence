@@ -5,15 +5,12 @@ import java.util.List;
 import java.util.concurrent.Callable;
 
 import org.bukkit.Location;
+import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
 
-import com.google.common.collect.Lists;
-
-import me.DevTec.ConfigAPI;
 import me.DevTec.TheAPI;
 import me.DevTec.Other.Position;
-import me.DevTec.UltimateResidence.Loader;
 import me.DevTec.UltimateResidence.Utils.Executor;
 
 public class Subzone {
@@ -21,18 +18,15 @@ public class Subzone {
 	private double[] size;
 	private String s;
 	private Position[] l;
-	private ConfigAPI c;
-	private List<String> a = Lists.newArrayList(), b = Lists.newArrayList();
-	public Subzone(Residence residence, String name) {
+	private ConfigurationSection c;
+	public Subzone(Residence residence, String name, ConfigurationSection configurationSection) {
 		r=residence;
 		s=name;
-		c=Loader.getData(r.getWorld());
-		String[] corners = c.getString("Residence."+r.getName()+".Subzone."+s+".Corners").split(":");
+		c=configurationSection;
+		String[] corners = c.getString("Corners").split(":");
 		l=new Position[] {Position.fromString(corners[0]),Position.fromString(corners[1])};
 		size = new double[] {Math.max(l[0].getBlockX(), l[1].getBlockX()) - Math.min(l[0].getBlockX(), l[1].getBlockX()) + 1
 	    , Math.max(l[0].getBlockZ(), l[1].getBlockZ())-Math.min(l[0].getBlockZ(), l[1].getBlockZ())+1};
-		b=c.getStringList("Residence."+r.getName()+".Subzone."+s+".Flags-Player");
-		a=c.getStringList("Residence."+r.getName()+".Subzone."+s+".Flags-Global");
 	}
 
 	/**
@@ -55,12 +49,11 @@ public class Subzone {
 	}
 
 	public void setSpawn(Position location) {
-		c.set("Residence."+r.getName()+".Subzone."+s+".Tp",location.toString());
-		c.save();
+		c.set("Tp",location.toString());
 	}
 
 	public Position getSpawn() {
-		return Position.fromString(c.getString("Residence."+r.getName()+".Subzone."+s+".Tp"));
+		return Position.fromString(c.getString("Tp"));
 	}
 	
 	public String getName() {
@@ -116,27 +109,27 @@ public class Subzone {
 		}).get();
 	}
 	public List<String> getFlags(){
-		return a;
+		return c.getStringList("Flags-Global");
 	}
 
 	public List<String> getPlayerFlags(){
-		return b;
+		return c.getStringList("Flags-Player");
 	}
 	
 	public void setFlag(Flag flag, boolean value) {
-			if(a.contains(flag.name()+":"+value))return;
-			if(a.contains(flag.name()+":"+(!value)))a.remove(flag.name()+":"+(!value));
-			a.add(flag.name()+":"+value);
-			c.set("Residence."+r.getName()+".Subzone."+s+".Flags-Global",a);
-			c.save();
+		List<String> a = getFlags();
+		if(a.contains(flag.name()+":"+value))return;
+		if(a.contains(flag.name()+":"+(!value)))a.remove(flag.name()+":"+(!value));
+		a.add(flag.name()+":"+value);
+		c.set("Flags-Global",a);
 	}
 	
 	public void setFlag(Flag flag, String player, boolean value) {
-			if(b.contains(player+":"+flag.name()+":"+value))return;
-			if(b.contains(player+":"+flag.name()+":"+(!value)))b.remove(player+":"+flag.name()+":"+(!value));
-			b.add(player+":"+flag.name()+":"+value);
-			c.set("Residence."+r.getName()+".Subzone."+s+".Flags-Player",b);
-			c.save();
+		List<String> b = getPlayerFlags();
+		if(b.contains(player+":"+flag.name()+":"+value))return;
+		if(b.contains(player+":"+flag.name()+":"+(!value)))b.remove(player+":"+flag.name()+":"+(!value));
+		b.add(player+":"+flag.name()+":"+value);
+		c.set("Flags-Player",b);
 	}
 
 	public boolean inside(Player player){
@@ -163,28 +156,25 @@ public class Subzone {
 		List<String> a = getMembers();
 		if(a.contains(player))return;
 		a.add(player);
-		c.set("Residence."+r.getName()+".Subzone."+s+".Members",a);
-		c.save();
+		c.set("Members",a);
 	}
 	
 	public void removeMember(String player) {
 		List<String> a = getMembers();
 		if(!a.contains(player))return;
 		a.remove(player);
-		c.set("Residence."+r.getName()+".Subzone."+s+".Members",a);
-		c.save();
+		c.set("Members",a);
 	}
 	
 	public List<String> getMembers(){
-		return c.getStringList("Residence."+r.getName()+".Subzone."+s+".Members");
+		return c.getStringList("Members");
 	}
 	
 	public void setOwner(String name) {
-		c.set("Residence."+r.getName()+".Subzone."+s+".Owner",name);
-		c.save();
+		c.set("Owner",name);
 	}
 	
 	public String getOwner() {
-		return c.getString("Residence."+r.getName()+".Subzone."+s+".Owner");
+		return c.getString("Owner");
 	}
 }

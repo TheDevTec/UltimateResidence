@@ -10,7 +10,7 @@ import me.DevTec.UltimateResidence.Loader;
 import me.DevTec.UltimateResidence.Utils.ad;
 
 public class URCMD implements CommandExecutor {
-	public static String d = "&c&lUResidence &8&l» &7";
+	public static String d = "&c&lUResidence &8&lÂ» &7";
 	@Override
 	public boolean onCommand(CommandSender s, Command dawd, String dawds, String[] args) {
 		if(!s.hasPermission("residence.user")) {
@@ -18,7 +18,7 @@ public class URCMD implements CommandExecutor {
 			return true;
 		}
 		if(args.length==0) {
-			TheAPI.msg("&8&l»------ &c&lUltimateResidence &8&l------«", s);
+			TheAPI.msg("&8&lÂ»------ &c&lUltimateResidence &8&l------Â»", s);
 			TheAPI.msg(d+"&e/Residence create [name]", s); //done
 			TheAPI.msg(d+"&e/Residence delete [residence]", s); //done
 			TheAPI.msg(d+"&e/Residence pset [residence] [player] [flag] [true/false]", s); //done
@@ -40,7 +40,7 @@ public class URCMD implements CommandExecutor {
 			TheAPI.msg(d+"&e/Residence reload", s); //done
 			if(ad.has(s,"residence.debug"))
 			TheAPI.msg(d+"&e/Residence debug", s); //done
-			TheAPI.msg("&8&l»------ &c&lUltimateResidence &8&l------«", s);
+			TheAPI.msg("&8&lÂ»------ &c&lUltimateResidence &8&l------Â»", s);
 			return true;
 		}
 		if(args[0].equalsIgnoreCase("debug")) {

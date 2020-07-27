@@ -2,42 +2,33 @@ package me.DevTec.UltimateResidence.API;
 
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.HashMap;
 import java.util.List;
 import java.util.concurrent.Callable;
 
 import org.bukkit.Location;
 import org.bukkit.World;
+import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
 
-import com.google.common.collect.Lists;
-import com.google.common.collect.Maps;
-
-import me.DevTec.ConfigAPI;
 import me.DevTec.TheAPI;
+import me.DevTec.Other.MultiMap;
 import me.DevTec.Other.Position;
-import me.DevTec.UltimateResidence.Loader;
 import me.DevTec.UltimateResidence.Utils.Executor;
 
 public class Residence {
 	private Position[] l;
-	private String name,owner;
-	private World world;
+	private final String name;
+	private final ConfigurationSection c;
 	private double[] size;
-	private ConfigAPI ac;
-	private List<String> a = Lists.newArrayList(), b = Lists.newArrayList();
-	private HashMap<String, Subzone> cache = Maps.newHashMap();
-	public Residence(String name, World w, String owner) {
+	//Residence, SubzoneName, Subzone
+	private static final MultiMap<String, String, Subzone> cache = new MultiMap<>();
+	public Residence(String name, ConfigurationSection sec) {
 		this.name=name;
-		this.owner=owner;
-		this.world=w;
-		ac=Loader.getData(world);
-		String[] sd = ac.getString("Residence."+name+".Corners").split(":");
+		c=sec;
+		String[] sd = c.getString("Corners").split(":");
 		l=new Position[] {Position.fromString(sd[0]),Position.fromString(sd[1])};
 		size = new double[] { Math.max(l[0].getBlockX(), l[1].getBlockX()) - Math.min(l[0].getBlockX(), l[1].getBlockX()) + 1, Math.max(l[0].getBlockZ(), l[1].getBlockZ())-Math.min(l[0].getBlockZ(), l[1].getBlockZ())+1};
-		a=ac.getStringList("Residence."+name+".Flags-Global");
-		b=ac.getStringList("Residence."+name+".Flags-Player");
 	}
 
 	public boolean isMember(String player) {
@@ -67,62 +58,56 @@ public class Residence {
 	 * @return int[]
 	 */
 	public int[] getMaximumSize() {
-		String[] s = ac.getString("Residence."+name+".Limit.Size").split("x");
+		String[] s = c.getString("Limit.Size").split("x");
 		return new int[] {TheAPI.getStringUtils().getInt(s[0]),TheAPI.getStringUtils().getInt(s[1])};
 	}
 
 	public void setMaximumSize(int x, int z) {
-		ac.set("Residence."+name+".Limit.Size",x+"x"+z);
-		ac.save();
+		c.set("Limit.Size",x+"x"+z);
 	}
 	
 	public int getMaximumSubzones() {
-		return ac.getInt("Residence."+name+".Limit.Subzones");
+		return c.getInt("Limit.Subzones");
 	}
 
 	public void setMaximumSubzones(int value) {
-		ac.set("Residence."+name+".Limit.Subzones",value);
-		ac.save();
+		c.set("Limit.Subzones",value);
 	}
 
 	public void setMaximumSize(int[] size) {
 		if(size.length >= 1) {
-		ac.set("Residence."+name+".Limit.Size",size[0]+"x"+size[1]);
-		ac.save();
+		c.set("Limit.Size",size[0]+"x"+size[1]);
 		}
 	}
 
 	public void setSpawn(Position location) {
-		ac.set("Residence."+name+".Tp",location.toString());
-		ac.save();
+		c.set("Tp",location.toString());
 	}
 
 	public Position getSpawn() {
-		return Position.fromString(ac.getString("Residence."+name+".Tp"));
+		return Position.fromString(c.getString("Tp"));
 	}
 	
 	public void addMember(String player) {
 		List<String> a = getMembers();
 		if(a.contains(player))return;
 		a.add(player);
-		ac.set("Residence."+name+".Members",a);
-		ac.save();
+		c.set("Members",a);
 	}
 	
 	public void removeMember(String player) {
 		List<String> a = getMembers();
 		if(!a.contains(player))return;
 		a.remove(player);
-		ac.set("Residence."+name+".Members",a);
-		ac.save();
+		c.set("Members",a);
 	}
 	
 	public List<String> getMembers(){
-		return ac.getStringList("Residence."+name+".Members");
+		return c.getStringList("Members");
 	}
 	
 	public String getOwner() {
-		return owner;
+		return c.getString("Owner");
 	}
 
 	public String getName() {
@@ -130,7 +115,7 @@ public class Residence {
 	}
 
 	public World getWorld() {
-		return world;
+		return l[0].getWorld();
 	}
 	
 	/**
@@ -175,27 +160,27 @@ public class Residence {
 		}).get();
 	}
 	public List<String> getFlags(){
-		return a;
+		return c.getStringList("Flags-Global");
 	}
 
 	public List<String> getPlayerFlags(){
-		return b;
+		return c.getStringList("Flags-Player");
 	}
 	
 	public void setFlag(Flag flag, boolean value) {
-			if(a.contains(flag.name()+":"+value))return;
-			if(a.contains(flag.name()+":"+(!value)))a.remove(flag.name()+":"+(!value));
-			a.add(flag.name()+":"+value);
-			ac.set("Residence."+name+".Flags-Global",a);
-			ac.save();
+		List<String> a = getFlags();
+		if(a.contains(flag.name()+":"+value))return;
+		if(a.contains(flag.name()+":"+(!value)))a.remove(flag.name()+":"+(!value));
+		a.add(flag.name()+":"+value);
+		c.set("Flags-Global",a);
 	}
 	
 	public void setFlag(Flag flag, String player, boolean value) {
-			if(b.contains(player+":"+flag.name()+":"+value))return;
-			if(b.contains(player+":"+flag.name()+":"+(!value)))b.remove(player+":"+flag.name()+":"+(!value));
-			b.add(player+":"+flag.name()+":"+value);
-			ac.set("Residence."+name+".Flags-Player",b);
-			ac.save();
+		List<String> b = getPlayerFlags();
+		if(b.contains(player+":"+flag.name()+":"+value))return;
+		if(b.contains(player+":"+flag.name()+":"+(!value)))b.remove(player+":"+flag.name()+":"+(!value));
+		b.add(player+":"+flag.name()+":"+value);
+		c.set("Flags-Player",b);
 	}
 
 	public boolean inside(Player player){
@@ -216,8 +201,8 @@ public class Residence {
 
 	public List<String> getSubzones() {
 		List<String> a = new ArrayList<String>();
-		if(ac.exist("Residence."+name+".Subzone"))
-		a.addAll(ac.getKeys("Residence."+name+".Subzone"));
+		if(c.getString("Subzone")!=null)
+		a.addAll(c.getConfigurationSection("Subzone").getKeys(false));
 		return a;
 	}
 	
@@ -250,10 +235,10 @@ public class Residence {
 		    	@Override
 		        public Subzone call() {
 		    		if(getSubzones().contains(name)) {
-		    			Subzone s = cache.containsKey(name) ? cache.get(name) : null;
+		    			Subzone s = cache.containsKey(name) ? cache.get(Residence.this.name,name) : null;
 		    			if(s==null) {
-		    				s=new Subzone(Residence.this, name);
-		    				cache.put(name, s);
+		    				s=new Subzone(Residence.this, name, c.getConfigurationSection("Subzone."+name));
+		    				cache.put(Residence.this.name, name, s);
 		    			}
 		    		return s;
 		    		}
@@ -261,23 +246,23 @@ public class Residence {
 		        }}).get();
 	}
 
-	public void createSubzone(String string, Position location, Position location2) {
-		ac.set("Residence."+name+".Subzone."+string+".Corners",
+	public Subzone createSubzone(String string, Position location, Position location2) {
+		c.set("Subzone."+string+".Corners",
 				location.toString()+":"+location2.toString());
-		ac.set("Residence."+name+".Subzone."+string+".Tp",location.toLocation());
-		ac.set("Residence."+name+".Subzone."+string+".Owner",getOwner());
-		ac.set("Residence."+name+".Subzone."+string+".Members",Arrays.asList(getOwner()));
-		ac.save();
+		c.set("Subzone."+string+".Tp",location.toLocation());
+		c.set("Subzone."+string+".Owner",getOwner());
+		c.set("Subzone."+string+".Members",Arrays.asList(getOwner()));
+		Subzone c = new Subzone(this, string, this.c.getConfigurationSection("Subzone."+string));
+		cache.put(name, string, c);
+		return c;
 	}
 
 	public void removeSubzone(Subzone z2) {
-		ac.set("Residence."+name+".Subzone."+z2.getName(),null);
-		ac.save();
+		c.set("Subzone."+z2.getName(),null);
 	}
 
 	public void removeSubzone(String z2) {
-		ac.set("Residence."+name+".Suzone."+z2,null);
-		ac.save();
+		c.set("Suzone."+z2,null);
 	}
 
 }

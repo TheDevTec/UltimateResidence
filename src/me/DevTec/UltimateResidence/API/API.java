@@ -15,6 +15,7 @@ import com.google.common.collect.Maps;
 import me.DevTec.ConfigAPI;
 import me.DevTec.TheAPI;
 import me.DevTec.Other.Position;
+import me.DevTec.Scheduler.Tasker;
 import me.DevTec.UltimateResidence.Loader;
 import me.DevTec.UltimateResidence.Utils.Group.SizeType;
 import me.DevTec.UltimateResidence.Utils.ResEvents;
@@ -32,7 +33,7 @@ public class API {
 		if(getResidenceOwner(world,residence)!=null) {
 			Residence r = cache.containsKey(residence) ? cache.get(residence) : null;
 			if(r==null) {
-				r=new Residence(residence,world,getResidenceOwner(world,residence));
+				r=new Residence(residence,Loader.getData(world).getConfigurationSection("Residence."+residence));
 				cache.put(residence, r);
 			}
 			return r;
@@ -94,15 +95,19 @@ public class API {
 		a.set("Residence."+res+".Limit.Subzones", getData(owner).getGroup().getMaxSubResidences());
 		a.set("Residence."+res+".Tp"
 				,TheAPI.getStringUtils().getLocationAsString(TheAPI.getPlayer(owner).getLocation()));
-		a.save();
-		Residence r = new Residence(res, world, owner);
+		new Tasker() {
+			public void run() {
+				a.save();
+			}
+		}.runAsync();
+		Residence r = new Residence(res, Loader.getData(world).getConfigurationSection("Residence."+res));
 		r.setFlag(Flag.MOVE, true);
 		r.setFlag(Flag.FLY, true);
 		r.setFlag(Flag.DOOR, true);
 		r.setFlag(Flag.ANIMALSPAWN, true);
 		r.setFlag(Flag.MONSTERSPAWN, true);
 		r.setFlag(Flag.MONSTERKILL, true);
-		cache.put(res, r); //default flags
+		cache.put(res, r);
 		getData(owner).addResidence(r);
 	}
 	
@@ -114,7 +119,13 @@ public class API {
 
 	public static void delete(String owner,String res) {
 		getData(owner).removeResidence(getResidenceByName(res));
-		Loader.getData(getResidenceByName(res).getWorld()).set("Residence."+res,null);
+		ConfigAPI a = Loader.getData(getResidenceByName(res).getWorld());
+		a.set("Residence."+res,null);
+		new Tasker() {
+			public void run() {
+				a.save();
+			}
+		}.runAsync();
 		cache.remove(res);
 	}
 	
