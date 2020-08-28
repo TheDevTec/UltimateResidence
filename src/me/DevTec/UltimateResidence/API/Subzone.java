@@ -9,8 +9,9 @@ import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
 
-import me.DevTec.TheAPI;
-import me.DevTec.Other.Position;
+import me.DevTec.TheAPI.BlocksAPI.BlocksAPI;
+import me.DevTec.TheAPI.Utils.Position;
+import me.DevTec.TheAPI.Utils.StringUtils;
 import me.DevTec.UltimateResidence.Utils.Executor;
 
 public class Subzone {
@@ -45,7 +46,7 @@ public class Subzone {
 	 */
 	public int[] getMaximumSize() {
 		String[]d = c.getString("Residence."+r.getName()+".Limit.Size").split("x");
-		return new int[] {TheAPI.getStringUtils().getInt(d[0]),TheAPI.getStringUtils().getInt(d[1])};
+		return new int[] {StringUtils.getInt(d[0]),StringUtils.getInt(d[1])};
 	}
 
 	public void setSpawn(Position location) {
@@ -145,7 +146,7 @@ public class Subzone {
 	}
 
 	public boolean inside(Position c) {
-        return TheAPI.getBlocksAPI().isInside(c,l[0],l[1]);
+        return BlocksAPI.isInside(c,l[0],l[1]);
 	}
 	
 	public boolean isMember(String player) {

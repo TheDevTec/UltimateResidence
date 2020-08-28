@@ -2,7 +2,7 @@ package me.DevTec.UltimateResidence.Commands;
 
 import org.bukkit.entity.Player;
 
-import me.DevTec.TheAPI;
+import me.DevTec.TheAPI.TheAPI;
 import me.DevTec.UltimateResidence.API.API;
 import me.DevTec.UltimateResidence.Utils.ResEvents;
 

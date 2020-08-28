@@ -3,7 +3,7 @@ package me.DevTec.UltimateResidence.Commands;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
-import me.DevTec.TheAPI;
+import me.DevTec.TheAPI.TheAPI;
 import me.DevTec.UltimateResidence.API.API;
 
 public class Padd {

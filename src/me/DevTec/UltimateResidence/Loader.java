@@ -11,9 +11,9 @@ import org.bukkit.plugin.java.JavaPlugin;
 
 import com.google.common.collect.Lists;
 
-import me.DevTec.ConfigAPI;
-import me.DevTec.TheAPI;
-import me.DevTec.Scheduler.Tasker;
+import me.DevTec.TheAPI.TheAPI;
+import me.DevTec.TheAPI.ConfigAPI.ConfigAPI;
+import me.DevTec.TheAPI.Scheduler.Tasker;
 import me.DevTec.UltimateResidence.API.API;
 import me.DevTec.UltimateResidence.API.Data;
 import me.DevTec.UltimateResidence.API.Flag;

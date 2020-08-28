@@ -4,7 +4,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.Event;
 import org.bukkit.event.HandlerList;
 
-import me.DevTec.Other.Position;
+import me.DevTec.TheAPI.Utils.Position;
 import me.DevTec.UltimateResidence.Loader;
 import me.DevTec.UltimateResidence.API.API;
 import me.DevTec.UltimateResidence.API.Residence;

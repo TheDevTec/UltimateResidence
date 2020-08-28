@@ -5,7 +5,7 @@ import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
-import me.DevTec.TheAPI;
+import me.DevTec.TheAPI.TheAPI;
 import me.DevTec.UltimateResidence.Loader;
 import me.DevTec.UltimateResidence.Utils.ad;
 

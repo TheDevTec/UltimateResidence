@@ -11,9 +11,11 @@ import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
 
-import me.DevTec.TheAPI;
-import me.DevTec.Other.MultiMap;
-import me.DevTec.Other.Position;
+import me.DevTec.TheAPI.TheAPI;
+import me.DevTec.TheAPI.BlocksAPI.BlocksAPI;
+import me.DevTec.TheAPI.MultiHashMap.MultiMap;
+import me.DevTec.TheAPI.Utils.Position;
+import me.DevTec.TheAPI.Utils.StringUtils;
 import me.DevTec.UltimateResidence.Utils.Executor;
 
 public class Residence {
@@ -59,7 +61,7 @@ public class Residence {
 	 */
 	public int[] getMaximumSize() {
 		String[] s = c.getString("Limit.Size").split("x");
-		return new int[] {TheAPI.getStringUtils().getInt(s[0]),TheAPI.getStringUtils().getInt(s[1])};
+		return new int[] {StringUtils.getInt(s[0]),StringUtils.getInt(s[1])};
 	}
 
 	public void setMaximumSize(int x, int z) {
@@ -196,7 +198,7 @@ public class Residence {
 	}
 
 	public boolean inside(Position c) {
-        return TheAPI.getBlocksAPI().isInside(c, l[0], l[1]);
+        return BlocksAPI.isInside(c, l[0], l[1]);
 	}
 
 	public List<String> getSubzones() {

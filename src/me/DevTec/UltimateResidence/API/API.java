@@ -12,10 +12,12 @@ import org.bukkit.entity.Player;
 
 import com.google.common.collect.Maps;
 
-import me.DevTec.ConfigAPI;
-import me.DevTec.TheAPI;
-import me.DevTec.Other.Position;
-import me.DevTec.Scheduler.Tasker;
+import me.DevTec.TheAPI.TheAPI;
+import me.DevTec.TheAPI.BlocksAPI.BlocksAPI;
+import me.DevTec.TheAPI.ConfigAPI.ConfigAPI;
+import me.DevTec.TheAPI.Scheduler.Tasker;
+import me.DevTec.TheAPI.Utils.Position;
+import me.DevTec.TheAPI.Utils.StringUtils;
 import me.DevTec.UltimateResidence.Loader;
 import me.DevTec.UltimateResidence.Utils.Group.SizeType;
 import me.DevTec.UltimateResidence.Utils.ResEvents;
@@ -94,7 +96,7 @@ public class API {
 				getData(owner).getGroup().getMaxSize(SizeType.Z));
 		a.set("Residence."+res+".Limit.Subzones", getData(owner).getGroup().getMaxSubResidences());
 		a.set("Residence."+res+".Tp"
-				,TheAPI.getStringUtils().getLocationAsString(TheAPI.getPlayer(owner).getLocation()));
+				,StringUtils.getLocationAsString(TheAPI.getPlayer(owner).getLocation()));
 		new Tasker() {
 			public void run() {
 				a.save();
@@ -134,7 +136,7 @@ public static Residence getResidence(Position location) {
     		ConfigAPI ac = Loader.getData(location.getWorld());
         	for(String s : getResidences(location.getWorld())) {
         		String[] sd = ac.getString("Residence."+s+".Corners").split(":");
-		if(TheAPI.getBlocksAPI().isInside(location, Position.fromString(sd[0]), Position.fromString(sd[1]))) {
+		if(BlocksAPI.isInside(location, Position.fromString(sd[0]), Position.fromString(sd[1]))) {
 			rr = getResidence(location.getWorld(),s);
 			break;
 		}

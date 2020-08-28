@@ -3,8 +3,8 @@ package me.DevTec.UltimateResidence.API;
 import java.util.ArrayList;
 import java.util.List;
 
-import me.DevTec.TheAPI;
-import me.DevTec.Other.User;
+import me.DevTec.TheAPI.TheAPI;
+import me.DevTec.TheAPI.Utils.DataKeeper.User;
 import me.DevTec.UltimateResidence.Utils.Group;
 
 public class Data {

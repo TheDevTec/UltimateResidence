@@ -4,7 +4,7 @@ import java.io.File;
 
 import org.bukkit.entity.Player;
 
-import me.DevTec.TheAPI;
+import me.DevTec.TheAPI.TheAPI;
 import me.DevTec.UltimateResidence.API.API;
 import me.DevTec.UltimateResidence.API.Flag;
 import me.DevTec.UltimateResidence.API.Residence;

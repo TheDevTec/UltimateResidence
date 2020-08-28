@@ -6,7 +6,8 @@ import java.util.List;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
-import me.DevTec.TheAPI;
+import me.DevTec.TheAPI.TheAPI;
+import me.DevTec.TheAPI.Utils.StringUtils;
 import me.DevTec.UltimateResidence.API.API;
 import me.DevTec.UltimateResidence.API.Residence;
 import me.DevTec.UltimateResidence.API.Subzone;
@@ -22,9 +23,9 @@ public class InfoCmd {
 				if(z==null) {
 				TheAPI.msg("&8&l»------ &c&lInfo about residence &8&l------»", s);
 				TheAPI.msg(URCMD.d+"Residence: &a"+r.getName(), s);
-				TheAPI.msg(URCMD.d+"Subzones: &a"+TheAPI.getStringUtils().join(r.getSubzones(), ", "), s);
+				TheAPI.msg(URCMD.d+"Subzones: &a"+StringUtils.join(r.getSubzones(), ", "), s);
 				TheAPI.msg(URCMD.d+"Owner: &a"+r.getOwner(), s);
-				TheAPI.msg(URCMD.d+"Members: &a"+TheAPI.getStringUtils().join(r.getMembers(), ", "), s);
+				TheAPI.msg(URCMD.d+"Members: &a"+StringUtils.join(r.getMembers(), ", "), s);
 				TheAPI.msg(URCMD.d+"Flags: &a"+constructFlags(r.getFlags()), s);
 				TheAPI.msg(URCMD.d+"Size: &a"+r.getSize()[0]+"x"+r.getSize()[1], s);
 				TheAPI.msg("&8&l»------ &c&lInfo about residence &8&l------»", s);
@@ -34,7 +35,7 @@ public class InfoCmd {
 				TheAPI.msg(URCMD.d+"Residence: &a"+r.getName(), s);
 				TheAPI.msg(URCMD.d+"Subzone: &a"+z.getName(), s);
 				TheAPI.msg(URCMD.d+"Owner: &a"+z.getOwner(), s);
-				TheAPI.msg(URCMD.d+"Members: &a"+TheAPI.getStringUtils().join(z.getMembers(), ", "), s);
+				TheAPI.msg(URCMD.d+"Members: &a"+StringUtils.join(z.getMembers(), ", "), s);
 				TheAPI.msg(URCMD.d+"Flags: &a"+constructFlags(z.getFlags()), s);
 				TheAPI.msg(URCMD.d+"Size: &a"+z.getSize()[0]+"x"+z.getSize()[1], s);
 				TheAPI.msg("&8&l»------ &c&lInfo about subzone &8&l------»", s);
@@ -60,7 +61,7 @@ public class InfoCmd {
 			TheAPI.msg(URCMD.d+"Residence: &a"+r.getName(), s);
 			TheAPI.msg(URCMD.d+"Subzone: &a"+z.getName(), s);
 			TheAPI.msg(URCMD.d+"Owner: &a"+z.getOwner(), s);
-			TheAPI.msg(URCMD.d+"Members: &a"+TheAPI.getStringUtils().join(z.getMembers(), ", "), s);
+			TheAPI.msg(URCMD.d+"Members: &a"+StringUtils.join(z.getMembers(), ", "), s);
 			TheAPI.msg(URCMD.d+"Flags: &a"+constructFlags(z.getFlags()), s);
 			TheAPI.msg(URCMD.d+"Size: &a"+z.getSize()[0]+"x"+z.getSize()[1], s);
 			TheAPI.msg("&8&l»------ &c&lInfo about subzone &8&l------»", s);
@@ -76,7 +77,7 @@ public class InfoCmd {
 				TheAPI.msg(URCMD.d+"Residence: &a"+r.getName(), s);
 				TheAPI.msg(URCMD.d+"Subzone: &a"+z.getName(), s);
 				TheAPI.msg(URCMD.d+"Owner: &a"+z.getOwner(), s);
-				TheAPI.msg(URCMD.d+"Members: &a"+TheAPI.getStringUtils().join(z.getMembers(), ", "), s);
+				TheAPI.msg(URCMD.d+"Members: &a"+StringUtils.join(z.getMembers(), ", "), s);
 				TheAPI.msg(URCMD.d+"Flags: &a"+constructFlags(z.getFlags()), s);
 				TheAPI.msg(URCMD.d+"Size: &a"+z.getSize()[0]+"x"+z.getSize()[1], s);
 				TheAPI.msg("&8&l»------ &c&lInfo about subzone &8&l------»", s);
@@ -85,9 +86,9 @@ public class InfoCmd {
 		
 		TheAPI.msg("&8&l»------ &c&lInfo about residence &8&l------»", s);
 		TheAPI.msg(URCMD.d+"Residence: &a"+r.getName(), s);
-		TheAPI.msg(URCMD.d+"Subzones: &a"+TheAPI.getStringUtils().join(r.getSubzones(), ", "), s);
+		TheAPI.msg(URCMD.d+"Subzones: &a"+StringUtils.join(r.getSubzones(), ", "), s);
 		TheAPI.msg(URCMD.d+"Owner: &a"+r.getOwner(), s);
-		TheAPI.msg(URCMD.d+"Members: &a"+TheAPI.getStringUtils().join(r.getMembers(), ", "), s);
+		TheAPI.msg(URCMD.d+"Members: &a"+StringUtils.join(r.getMembers(), ", "), s);
 		TheAPI.msg(URCMD.d+"Flags: &a"+constructFlags(r.getFlags()), s);
 		TheAPI.msg(URCMD.d+"Size: &a"+r.getSize()[0]+"x"+r.getSize()[1], s);
 		TheAPI.msg("&8&l»------ &c&lInfo about residence &8&l------»", s);
@@ -100,6 +101,6 @@ public class InfoCmd {
 			String[] d = f.split(":");
 			a.add((Boolean.valueOf(d[1])?"&a" : "&c")+d[0]);
 		}
-		return TheAPI.getStringUtils().join(a,"&7, ");
+		return StringUtils.join(a,"&7, ");
 	}
 }

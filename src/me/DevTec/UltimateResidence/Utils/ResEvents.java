@@ -27,9 +27,9 @@ import org.bukkit.event.player.PlayerToggleFlightEvent;
 
 import com.google.common.collect.Maps;
 
-import me.DevTec.TheAPI;
-import me.DevTec.Other.Position;
-import me.DevTec.Scheduler.Tasker;
+import me.DevTec.TheAPI.TheAPI;
+import me.DevTec.TheAPI.Scheduler.Tasker;
+import me.DevTec.TheAPI.Utils.Position;
 import me.DevTec.UltimateResidence.Loader;
 import me.DevTec.UltimateResidence.API.API;
 import me.DevTec.UltimateResidence.API.Data;
@@ -347,7 +347,7 @@ public class ResEvents implements Listener {
 		    								else {
 		    								inz.put(p, z);
 		    								if(es.getTitle()!=null)
-		    									TheAPI.getPlayerAPI(p).sendTitle(es.getTitle()[0].replace("%player", p.getName()).replace("%residence", z.getName())
+		    									TheAPI.sendTitle(p,es.getTitle()[0].replace("%player", p.getName()).replace("%residence", z.getName())
 		    											.replace("%owner", z.getOwner()), es.getTitle()[1].replace("%player", p.getName()).replace("%residence", z.getName())
 		    											.replace("%owner", z.getOwner()));
 		    								if(es.getActionBar()!=null) 
@@ -389,7 +389,7 @@ public class ResEvents implements Listener {
 	    								else {
 	    									inz.put(p, z);
 		    						if(es.getTitle()!=null)
-		    							TheAPI.getPlayerAPI(p).sendTitle(es.getTitle()[0].replace("%player", p.getName()).replace("%residence", z.getName())
+		    							TheAPI.sendTitle(p,es.getTitle()[0].replace("%player", p.getName()).replace("%residence", z.getName())
 		    									.replace("%owner", z.getOwner()), es.getTitle()[1].replace("%player", p.getName()).replace("%residence", z.getName())
 		    											.replace("%owner", z.getOwner()));
 		    						if(es.getActionBar()!=null) 
@@ -408,7 +408,7 @@ public class ResEvents implements Listener {
     								else {
 		    					in.put(p, r);
 		    					if(es.getTitle()!=null)
-		    						TheAPI.getPlayerAPI(p).sendTitle(es.getTitle()[0].replace("%player", p.getName()).replace("%residence", r.getName())
+		    						TheAPI.sendTitle(p,es.getTitle()[0].replace("%player", p.getName()).replace("%residence", r.getName())
 		    								.replace("%owner", r.getOwner()), es.getTitle()[1].replace("%player", p.getName()).replace("%residence", r.getName())
 		    										.replace("%owner", r.getOwner()));
 		    					if(es.getActionBar()!=null) 
@@ -426,7 +426,7 @@ public class ResEvents implements Listener {
 	    								else {
 	    									in.put(p, r);
 		    						if(es.getTitle()!=null)
-		    							TheAPI.getPlayerAPI(p).sendTitle(es.getTitle()[0].replace("%player", p.getName()).replace("%residence", r.getName())
+		    							TheAPI.sendTitle(p,es.getTitle()[0].replace("%player", p.getName()).replace("%residence", r.getName())
 		    									.replace("%owner", r.getOwner()),es.getTitle()[1].replace("%player", p.getName()).replace("%residence", r.getName())
 		    									.replace("%owner", r.getOwner()));
 		    						if(es.getActionBar()!=null) 
@@ -444,7 +444,7 @@ public class ResEvents implements Listener {
 		    				Residence rs = in.get(p);
 		    				in.remove(p);
 		    				if(es.getTitle()!=null)
-		    					TheAPI.getPlayerAPI(p).sendTitle(es.getTitle()[0].replace("%player", p.getName()).replace("%residence", rs.getName())
+		    					TheAPI.sendTitle(p,es.getTitle()[0].replace("%player", p.getName()).replace("%residence", rs.getName())
 		    							.replace("%owner", rs.getOwner()), es.getTitle()[1].replace("%player", p.getName()).replace("%residence", rs.getName())
 		    							.replace("%owner", rs.getOwner()));
 		    				if(es.getActionBar()!=null) 
@@ -459,7 +459,7 @@ public class ResEvents implements Listener {
 		    					Subzone rr = inz.get(p);
 		    					inz.remove(p);
 		    					if(ess.getTitle()!=null)
-		    						TheAPI.getPlayerAPI(p).sendTitle(ess.getTitle()[0].replace("%player", p.getName()).replace("%residence", rr.getName())
+		    						TheAPI.sendTitle(p,ess.getTitle()[0].replace("%player", p.getName()).replace("%residence", rr.getName())
 		    								.replace("%owner", rr.getOwner()), ess.getTitle()[1].replace("%player", p.getName()).replace("%residence", rr.getName())
 		    								.replace("%owner", rr.getOwner()));
 		    					if(ess.getActionBar()!=null) 
