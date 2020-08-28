@@ -15,7 +15,6 @@ import me.DevTec.TheAPI.TheAPI;
 import me.DevTec.TheAPI.ConfigAPI.ConfigAPI;
 import me.DevTec.TheAPI.Scheduler.Tasker;
 import me.DevTec.UltimateResidence.API.API;
-import me.DevTec.UltimateResidence.API.Data;
 import me.DevTec.UltimateResidence.API.Flag;
 import me.DevTec.UltimateResidence.API.Residence;
 import me.DevTec.UltimateResidence.API.Subzone;
@@ -90,13 +89,6 @@ public class Loader extends JavaPlugin {
 		g.create();
 		c.addDefault("ShowNoPermsMsg", true);
 		c.create();
-				if(Loader.g.getConfig().getString("Groups")!=null)
-				for(Player s : TheAPI.getOnlinePlayers()) {
-						for(String sd: Loader.g.getConfig().getConfigurationSection("Groups").getKeys(false)) {
-							if(s.hasPermission("residence.group."+sd)) {
-								new Data(s.getName()).setGroup(sd);
-								break;
-				}}}
 				
 		Bukkit.getPluginCommand("UltimateResidence").setExecutor(new URCMD());
 		Bukkit.getPluginManager().registerEvents(new ResEvents(), this);

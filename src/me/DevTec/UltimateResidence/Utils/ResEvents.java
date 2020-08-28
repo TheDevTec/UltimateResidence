@@ -21,18 +21,15 @@ import org.bukkit.event.entity.EntityDamageEvent.DamageCause;
 import org.bukkit.event.player.PlayerInteractAtEntityEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.event.player.PlayerItemDamageEvent;
-import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerMoveEvent;
 import org.bukkit.event.player.PlayerToggleFlightEvent;
 
 import com.google.common.collect.Maps;
 
 import me.DevTec.TheAPI.TheAPI;
-import me.DevTec.TheAPI.Scheduler.Tasker;
 import me.DevTec.TheAPI.Utils.Position;
 import me.DevTec.UltimateResidence.Loader;
 import me.DevTec.UltimateResidence.API.API;
-import me.DevTec.UltimateResidence.API.Data;
 import me.DevTec.UltimateResidence.API.Flag;
 import me.DevTec.UltimateResidence.API.Residence;
 import me.DevTec.UltimateResidence.API.Subzone;
@@ -104,19 +101,6 @@ public class ResEvents implements Listener {
 					return;
 				}
 			}
-	}
-	@EventHandler
-	public void onJoin(PlayerJoinEvent e) {
-		Player s = e.getPlayer();
-		new Tasker() {
-			public void run() {
-				for(String sd: Loader.g.getConfig().getConfigurationSection("Groups").getKeys(false)) {
-					if(s.hasPermission("residence.group."+sd)) {
-						new Data(s.getName()).setGroup(sd);
-						break;
-					}}
-			}
-		}.laterAsync(20);
 	}
 	
 	@EventHandler
