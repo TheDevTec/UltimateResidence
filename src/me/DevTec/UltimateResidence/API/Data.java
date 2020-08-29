@@ -36,8 +36,7 @@ public class Data {
 
 	public int getAmountOfResidences() {
 		int a= 0;
-		if(c.existPath("Residences"))
-		for(String s: c.getConfigurationSection("Residences",false))a+=getResidences(s).size();
+		for(String s: c.getKeys("Residences"))a+=getResidences(s).size();
 		return a;
 	}
 	
@@ -67,8 +66,7 @@ public class Data {
 
 	public ArrayList<String> getResidences() {
 		ArrayList<String> a = new ArrayList<String>();
-		if(c.getConfig().getString("Residences")!=null)
-		for(String s: c.getConfigurationSection("Residences",false))a.addAll(getResidences(s));
+		for(String s: c.getKeys("Residences"))a.addAll(getResidences(s));
 		return a;
 	}
 }
