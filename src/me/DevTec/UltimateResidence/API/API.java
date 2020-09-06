@@ -14,7 +14,7 @@ import com.google.common.collect.Maps;
 
 import me.DevTec.TheAPI.TheAPI;
 import me.DevTec.TheAPI.BlocksAPI.BlocksAPI;
-import me.DevTec.TheAPI.ConfigAPI.ConfigAPI;
+import me.DevTec.TheAPI.ConfigAPI.Config;
 import me.DevTec.TheAPI.Scheduler.Tasker;
 import me.DevTec.TheAPI.Utils.Position;
 import me.DevTec.TheAPI.Utils.StringUtils;
@@ -32,10 +32,10 @@ public class API {
 	}
 	
 	public static Residence getResidence(World world, String residence) {
-		if(getResidenceOwner(world,residence)!=null) {
+		if(Loader.getData(world).exists("Residence."+residence)) {
 			Residence r = cache.containsKey(residence) ? cache.get(residence) : null;
 			if(r==null) {
-				r=new Residence(residence,Loader.getData(world).getConfigurationSection("Residence."+residence));
+				r=new Residence(residence,Loader.getData(world).getSection("Residence."+residence));
 				cache.put(residence, r);
 			}
 			return r;
@@ -49,23 +49,21 @@ public class API {
 
 	public static Residence getResidenceByName(String residence) {
 		Residence r = null;
-		for(World w : Bukkit.getWorlds()) {
+		for(World w : Bukkit.getWorlds())
 			if(getResidences(w).contains(residence)) {
 				r=getResidence(w,residence);
 				break;
 			}
-		}
 		return r;
 	}
 	
 	public static World getResidenceWorldByName(String res) {
 		World r = null;
-		for(World w : Bukkit.getWorlds()) {
+		for(World w : Bukkit.getWorlds())
 			if(getResidences(w).contains(res)) {
-				r=getResidence(w,res).getWorld();
+				r=w;
 				break;
 			}
-		}
 		return r;
 	}
 	
@@ -79,17 +77,16 @@ public class API {
 
 	private static List<String> getResidences(World world) {
 		List<String> a = new ArrayList<String>();
-		if(new ConfigAPI("UltimateResidence","Data/"+world.getName()).existPath("Residence"))
 		for(String s: Loader.getData(world).getKeys("Residence"))
 			a.add(s);
 		return a;
 	}
 
 	public static void create(World world, String owner,String res) {
-		ConfigAPI a = Loader.getData(world);
+		Config a = Loader.getData(world);
 		a.set("Residence."+res+".Corners", 
-				ResEvents.locs.get(owner)[0].toString()+":"+
-				ResEvents.locs.get(owner)[1].toString());
+				StringUtils.getLocationAsString(ResEvents.locs.get(owner)[0].toLocation())+":"+
+						StringUtils.getLocationAsString(ResEvents.locs.get(owner)[1].toLocation()));
 		a.set("Residence."+res+".Owner", owner);
 		a.set("Residence."+res+".Members", Arrays.asList(owner));
 		a.set("Residence."+res+".Limit.Size", getData(owner).getGroup().getMaxSize(SizeType.X)+"x"+
@@ -102,7 +99,7 @@ public class API {
 				a.save();
 			}
 		}.runAsync();
-		Residence r = new Residence(res, Loader.getData(world).getConfigurationSection("Residence."+res));
+		Residence r = new Residence(res, a.getSection("Residence."+res));
 		r.setFlag(Flag.MOVE, true);
 		r.setFlag(Flag.FLY, true);
 		r.setFlag(Flag.DOOR, true);
@@ -121,7 +118,7 @@ public class API {
 
 	public static void delete(String owner,String res) {
 		getData(owner).removeResidence(getResidenceByName(res));
-		ConfigAPI a = Loader.getData(getResidenceByName(res).getWorld());
+		Config a = Loader.getData(getResidenceByName(res).getWorld());
 		a.set("Residence."+res,null);
 		new Tasker() {
 			public void run() {
@@ -133,7 +130,7 @@ public class API {
 	
 public static Residence getResidence(Position location) {
     		Residence rr=null;
-    		ConfigAPI ac = Loader.getData(location.getWorld());
+    		Config ac = Loader.getData(location.getWorld());
         	for(String s : getResidences(location.getWorld())) {
         		String[] sd = ac.getString("Residence."+s+".Corners").split(":");
 		if(BlocksAPI.isInside(location, Position.fromString(sd[0]), Position.fromString(sd[1]))) {
@@ -149,10 +146,12 @@ public static Residence getResidence(Position location) {
 	}
 
 	public static boolean isColliding(Residence res, Residence anotherOne) {
-		   return res.inside(anotherOne.getCorners()[0])&&res.inside(anotherOne.getCorners()[1]);
+		if(anotherOne==null||res==null)return false;
+		return res.inside(anotherOne.getCorners()[0])&&res.inside(anotherOne.getCorners()[1]);
 	}
 
 	public static boolean isCollidingWithSubzone(Subzone sub, Subzone anotherOne) {
+		if(anotherOne==null||sub==null)return false;
 		   return sub.inside(anotherOne.getCorners()[0])&&sub.inside(anotherOne.getCorners()[1]);
 	}
 

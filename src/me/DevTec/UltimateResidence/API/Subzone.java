@@ -5,13 +5,14 @@ import java.util.List;
 import java.util.concurrent.Callable;
 
 import org.bukkit.Location;
-import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
 
 import me.DevTec.TheAPI.BlocksAPI.BlocksAPI;
+import me.DevTec.TheAPI.ConfigAPI.Section;
 import me.DevTec.TheAPI.Utils.Position;
 import me.DevTec.TheAPI.Utils.StringUtils;
+import me.DevTec.UltimateResidence.Loader;
 import me.DevTec.UltimateResidence.Utils.Executor;
 
 public class Subzone {
@@ -19,8 +20,8 @@ public class Subzone {
 	private double[] size;
 	private String s;
 	private Position[] l;
-	private ConfigurationSection c;
-	public Subzone(Residence residence, String name, ConfigurationSection configurationSection) {
+	private Section c;
+	public Subzone(Residence residence, String name, Section configurationSection) {
 		r=residence;
 		s=name;
 		c=configurationSection;
@@ -123,6 +124,7 @@ public class Subzone {
 		if(a.contains(flag.name()+":"+(!value)))a.remove(flag.name()+":"+(!value));
 		a.add(flag.name()+":"+value);
 		c.set("Flags-Global",a);
+		Loader.getData(l[0].getWorld()).save();
 	}
 	
 	public void setFlag(Flag flag, String player, boolean value) {
@@ -131,6 +133,7 @@ public class Subzone {
 		if(b.contains(player+":"+flag.name()+":"+(!value)))b.remove(player+":"+flag.name()+":"+(!value));
 		b.add(player+":"+flag.name()+":"+value);
 		c.set("Flags-Player",b);
+		Loader.getData(l[0].getWorld()).save();
 	}
 
 	public boolean inside(Player player){
@@ -158,6 +161,7 @@ public class Subzone {
 		if(a.contains(player))return;
 		a.add(player);
 		c.set("Members",a);
+		Loader.getData(l[0].getWorld()).save();
 	}
 	
 	public void removeMember(String player) {
@@ -165,6 +169,7 @@ public class Subzone {
 		if(!a.contains(player))return;
 		a.remove(player);
 		c.set("Members",a);
+		Loader.getData(l[0].getWorld()).save();
 	}
 	
 	public List<String> getMembers(){
@@ -173,6 +178,7 @@ public class Subzone {
 	
 	public void setOwner(String name) {
 		c.set("Owner",name);
+		Loader.getData(l[0].getWorld()).save();
 	}
 	
 	public String getOwner() {

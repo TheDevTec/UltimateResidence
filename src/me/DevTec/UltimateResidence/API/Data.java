@@ -25,8 +25,8 @@ public class Data {
 
 	public Group getGroup() {
 		String g="default";
-		if(Loader.g.getConfig().getString("Groups")!=null)
-					for(String sd: Loader.g.getConfig().getConfigurationSection("Groups").getKeys(false))
+		if(Loader.g.getString("Groups")!=null)
+					for(String sd: Loader.g.getKeys("Groups"))
 						if(Bukkit.getPlayer(s).hasPermission("residence.group."+sd)) {
 							g = sd;
 							break;

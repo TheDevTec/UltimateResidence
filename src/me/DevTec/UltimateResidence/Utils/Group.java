@@ -15,7 +15,7 @@ public class Group {
 	
 	public int getMaxSize(SizeType type) {
 		int a = 0;
-		String[] sd = Loader.g.getConfig().getString("Groups."+s+".Size").split("x");
+		String[] sd = Loader.g.getString("Groups."+s+".Size").split("x");
 		int x= StringUtils.getInt(sd[0]);
 		int z=StringUtils.getInt(sd[1]);
 		switch(type) {
@@ -30,25 +30,25 @@ public class Group {
 	}
 
 	public int getMaxResidences() {
-		return Loader.g.getConfig().getInt("Groups."+s+".Residences");
+		return Loader.g.getInt("Groups."+s+".Residences");
 	}
 
 	public int getMaxSubResidences() {
-		return Loader.g.getConfig().getInt("Groups."+s+".SubResidences");
+		return Loader.g.getInt("Groups."+s+".SubResidences");
 	}
 
 	public void setMaxResidences(int max) {
-		 Loader.g.getConfig().set("Groups."+s+".Residences",max);
+		 Loader.g.set("Groups."+s+".Residences",max);
 		 Loader.g.save();
 	}
 
 	public void setMaxSubResidences(int max) {
-		 Loader.g.getConfig().set("Groups."+s+".SubResidences",max);
+		 Loader.g.set("Groups."+s+".SubResidences",max);
 		 Loader.g.save();
 	}
 
 	public void setMaxSize(int x,int z) {
-		 Loader.g.getConfig().set("Groups."+s+".Size",x+"x"+z);
+		 Loader.g.set("Groups."+s+".Size",x+"x"+z);
 		 Loader.g.save();
 	}
 

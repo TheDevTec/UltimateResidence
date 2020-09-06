@@ -310,6 +310,7 @@ public class ResEvents implements Listener {
 	
 	@EventHandler(priority = EventPriority.LOWEST)
 	public void onMove(PlayerMoveEvent e) {
+		if(e.isCancelled())return;
 		long nano = System.currentTimeMillis();
 		Location from = e.getFrom(), to = e.getTo();
 		Player p = e.getPlayer();
@@ -321,7 +322,7 @@ public class ResEvents implements Listener {
 		    			Residence r = API.getResidence(new Position(to));
 		    			Subzone z = r != null ? r.getSubzone(p): null;
 		    			boolean cancel = false;
-		    			if(r!=null && !e.isCancelled()) {
+		    			if(r!=null) {
 		    				if(in.containsKey(p) && in.get(p).equals(r)) { //in residence
 		    					if(inz.containsKey(p) && z != null && !inz.get(p).equals(z)) { //switch subzone
 		    						SubzoneSwitchEvent es = new SubzoneSwitchEvent(z,p);
@@ -346,22 +347,22 @@ public class ResEvents implements Listener {
 		    						inz.remove(p);
 		    						Bukkit.getPluginManager().callEvent(es);
 		    						String group = API.getData(p.getName()).getGroup().getName();
-		    						if(Loader.g.getConfig().getBoolean("Groups."+group+".Chat.Use")) {
-		    							TheAPI.msg(Loader.g.getConfig().getString("Groups."+group+".Chat.Enter").replace("%player", p.getName())
+		    						if(Loader.g.getBoolean("Groups."+group+".Chat.Use")) {
+		    							TheAPI.msg(Loader.g.getString("Groups."+group+".Chat.Enter").replace("%player", p.getName())
 		    									.replace("%residence", r.getName())
 		    									.replace("%owner", r.getOwner()),p);
 		    						}
-		    						if(Loader.g.getConfig().getBoolean("Groups."+group+".Title.Use")) {
-		    							TheAPI.sendTitle(p, Loader.g.getConfig().getString("Groups."+group+".Title.Enter.Line1")
+		    						if(Loader.g.getBoolean("Groups."+group+".Title.Use")) {
+		    							TheAPI.sendTitle(p, Loader.g.getString("Groups."+group+".Title.Enter.Line1")
 		    									.replace("%player", p.getName())
 		    									.replace("%residence", r.getName())
-		    									.replace("%owner", r.getOwner()),Loader.g.getConfig().getString("Groups."+group+".Title.Enter.Line2")
+		    									.replace("%owner", r.getOwner()),Loader.g.getString("Groups."+group+".Title.Enter.Line2")
 		    									.replace("%player", p.getName())
 		    									.replace("%residence", r.getName())
 		    									.replace("%owner", r.getOwner()));
 		    						}
-		    						if(Loader.g.getConfig().getBoolean("Groups."+group+".ActionBar.Use")) {
-		    							TheAPI.sendActionBar(p, Loader.g.getConfig().getString("Groups."+group+".ActionBar.Enter").replace("%player", p.getName())
+		    						if(Loader.g.getBoolean("Groups."+group+".ActionBar.Use")) {
+		    							TheAPI.sendActionBar(p, Loader.g.getString("Groups."+group+".ActionBar.Enter").replace("%player", p.getName())
 		    									.replace("%residence", r.getName())
 		    									.replace("%owner", r.getOwner()));
 		    						}
@@ -426,17 +427,6 @@ public class ResEvents implements Listener {
 		    				ResidenceLeaveEvent es = new ResidenceLeaveEvent(in.get(p),e.getFrom(),p);
 		    				Bukkit.getPluginManager().callEvent(es);
 		    				Residence rs = in.get(p);
-		    				in.remove(p);
-		    				if(es.getTitle()!=null)
-		    					TheAPI.sendTitle(p,es.getTitle()[0].replace("%player", p.getName()).replace("%residence", rs.getName())
-		    							.replace("%owner", rs.getOwner()), es.getTitle()[1].replace("%player", p.getName()).replace("%residence", rs.getName())
-		    							.replace("%owner", rs.getOwner()));
-		    				if(es.getActionBar()!=null) 
-		    					TheAPI.sendActionBar(p, es.getActionBar().replace("%player", p.getName()).replace("%residence", rs.getName())
-		    							.replace("%owner", rs.getOwner()));
-		    				if(es.getChat()!=null) 
-		    					TheAPI.msg(es.getChat().replace("%player", p.getName()).replace("%residence", rs.getName())
-		    							.replace("%owner", rs.getOwner()), p);
 		    				if(inz.containsKey(p) && z == null) { //leave subzone
 		    					SubzoneLeaveEvent ess = new SubzoneLeaveEvent(inz.get(p),new Position(e.getFrom()),p);
 		    					Bukkit.getPluginManager().callEvent(ess);
@@ -452,12 +442,24 @@ public class ResEvents implements Listener {
 		    					if(ess.getChat()!=null) 
 		    						TheAPI.msg(es.getChat().replace("%player", p.getName()).replace("%residence", rr.getName())
 		    								.replace("%owner", rr.getOwner()), p);
-		    				}}}
+		    				}
+		    				in.remove(p);
+		    				if(es.getTitle()!=null)
+		    					TheAPI.sendTitle(p,es.getTitle()[0].replace("%player", p.getName()).replace("%residence", rs.getName())
+		    							.replace("%owner", rs.getOwner()), es.getTitle()[1].replace("%player", p.getName()).replace("%residence", rs.getName())
+		    							.replace("%owner", rs.getOwner()));
+		    				if(es.getActionBar()!=null) 
+		    					TheAPI.sendActionBar(p, es.getActionBar().replace("%player", p.getName()).replace("%residence", rs.getName())
+		    							.replace("%owner", rs.getOwner()));
+		    				if(es.getChat()!=null) 
+		    					TheAPI.msg(es.getChat().replace("%player", p.getName()).replace("%residence", rs.getName())
+		    							.replace("%owner", rs.getOwner()), p);
+		    				}}
 		    				return cancel;
 		        }
 		return false;
 		}}).get();
-		if(c)e.setCancelled(true);
+		e.setCancelled(c);
 		nano=System.currentTimeMillis()-nano;
 		if(nano!=0)
 		for(String s : Loader.debugging)
@@ -506,23 +508,21 @@ public class ResEvents implements Listener {
 					Flag f = e.getEntity() instanceof Player ? Flag.PVP : 
 						(isMob(e.getEntityType().name()) ? Flag.ANIMALKILL:Flag.MONSTERKILL);
 					if(f==Flag.ANIMALKILL||f==Flag.MONSTERKILL)
-					if(s.hasPermission("residence.admin"))return false;
+					if(s.hasPermission("residence.admin"))return f!=Flag.PVP?false:true;
 					if(!z.getFlag(f)&&!z.getPlayerFlag(f,s.getName())) {
 						if(Loader.c.getBoolean("ShowNoPermsMsg"))
 						s("&c&lUResidence &8&l» &7You do not have permission &c"+f.name()+" &7here.", s);
-						e.setCancelled(true);
 						return true;
 					}
 				}else {
 				Flag f = e.getEntity() instanceof Player ? Flag.PVP : 
 					(isMob(e.getEntityType().name()) ? Flag.ANIMALKILL:Flag.MONSTERKILL);
 				if(f==Flag.ANIMALKILL||f==Flag.MONSTERKILL)
-				if(s.hasPermission("residence.admin"))return false;
+					if(s.hasPermission("residence.admin"))return f!=Flag.PVP?false:true;
 				if(!r.getFlag(f)&&!r.getPlayerFlag(f,s.getName())) {
 					if(Loader.c.getBoolean("ShowNoPermsMsg"))
 					s("&c&lUResidence &8&l» &7You do not have permission &c"+f.name()+" &7here.", s);
-					e.setCancelled(true);
-					return false;
+					return true;
 				}}}return false;}}).get());
 			}}
 	@EventHandler(priority = EventPriority.LOWEST)
