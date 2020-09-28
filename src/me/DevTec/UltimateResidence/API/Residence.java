@@ -3,7 +3,6 @@ package me.DevTec.UltimateResidence.API;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-import java.util.concurrent.Callable;
 
 import org.bukkit.Location;
 import org.bukkit.World;
@@ -17,7 +16,6 @@ import me.DevTec.TheAPI.Utils.Position;
 import me.DevTec.TheAPI.Utils.StringUtils;
 import me.DevTec.TheAPI.Utils.DataKeeper.Maps.MultiMap;
 import me.DevTec.UltimateResidence.Loader;
-import me.DevTec.UltimateResidence.Utils.Executor;
 
 public class Residence {
 	private Position[] l;
@@ -137,47 +135,39 @@ public class Residence {
 	}
 
 	public boolean getFlag(Flag f){
-		return (Boolean)new Executor(new Callable<Boolean>() {
-			public Boolean call() {
-				boolean fr = false;
-				for(String a : getFlags()) {
-					String[] s = a.split(":");
-					if(s[0].equalsIgnoreCase(f.name())) {
-						fr=Boolean.valueOf(s[1]);
-						break;
-					}
-				}
-				return fr;
+		boolean fr = false;
+		for(Object a : getFlags()) {
+			String[] s = a.toString().split(":");
+			if(s[0].equalsIgnoreCase(f.name())) {
+				fr=Boolean.valueOf(s[1]);
+				break;
 			}
-		}).get();
+		}
+		return fr;
 	}
 
 	public boolean getPlayerFlag(Flag f, String player){
-		return (Boolean)new Executor(new Callable<Boolean>() {
-			public Boolean call() {
-				boolean fr = false;
-				if(getMembers().contains(player))return true; //members has all flags!
-				for(String a : getPlayerFlags()) {
-					String[] s = a.split(":");
-					if(s[1].equalsIgnoreCase(f.name()) && s[0].equals(player)) {
-						fr=Boolean.valueOf(s[2]);
-						break;
-					}
-				}
-				return fr;
+		boolean fr = false;
+		if(getMembers().contains(player))return true; //members has all flags!
+		for(Object a : getPlayerFlags()) {
+			String[] s = a.toString().split(":");
+			if(s[1].equalsIgnoreCase(f.name()) && s[0].equals(player)) {
+				fr=Boolean.valueOf(s[2]);
+				break;
 			}
-		}).get();
+		}
+		return fr;
 	}
-	public List<String> getFlags(){
-		return c.getStringList("Flags-Global");
+	public List<Object> getFlags(){
+		return c.getList("Flags-Global");
 	}
 
-	public List<String> getPlayerFlags(){
-		return c.getStringList("Flags-Player");
+	public List<Object> getPlayerFlags(){
+		return c.getList("Flags-Player");
 	}
 	
 	public void setFlag(Flag flag, boolean value) {
-		List<String> a = getFlags();
+		List<Object> a = getFlags();
 		if(a.contains(flag.name()+":"+value))return;
 		if(a.contains(flag.name()+":"+(!value)))a.remove(flag.name()+":"+(!value));
 		a.add(flag.name()+":"+value);
@@ -186,7 +176,7 @@ public class Residence {
 	}
 	
 	public void setFlag(Flag flag, String player, boolean value) {
-		List<String> b = getPlayerFlags();
+		List<Object> b = getPlayerFlags();
 		if(b.contains(player+":"+flag.name()+":"+value))return;
 		if(b.contains(player+":"+flag.name()+":"+(!value)))b.remove(player+":"+flag.name()+":"+(!value));
 		b.add(player+":"+flag.name()+":"+value);
@@ -211,10 +201,7 @@ public class Residence {
 	}
 
 	public List<String> getSubzones() {
-		List<String> a = new ArrayList<String>();
-		if(c.getString("Subzone")!=null)
-		a.addAll(c.getSection("Subzone").getKeys());
-		return a;
+		return new ArrayList<String>(c.getKeys("Subzone"));
 	}
 	
 	public Subzone getSubzone(Player a) {
@@ -226,35 +213,27 @@ public class Residence {
 	}
 
 	public Subzone getSubzone(Position c) {
-		   return (Subzone)new Executor(new Callable<Subzone>() {
-		    	@Override
-		        public Subzone call() {
-		    		Subzone d= null;
-		    		for(String s: getSubzones()) {
-		    			Subzone f = getSubzone(s);
-		    			if(f.inside(c)) {
-		    				d=f;
-		    				break;
-		    			}
-		    		}
-		    		return d;
-		        }}).get();
+		Subzone d= null;
+		for(String s: getSubzones()) {
+			Subzone f = getSubzone(s);
+			if(f.inside(c)) {
+				d=f;
+				break;
+			}
+		}
+		return d;
 	}
 
 	public Subzone getSubzone(String name) {
-		   return (Subzone)new Executor(new Callable<Subzone>() {
-		    	@Override
-		        public Subzone call() {
-		    		if(getSubzones().contains(name)) {
-		    			Subzone s = cache.containsKey(name) ? cache.get(Residence.this.name,name) : null;
-		    			if(s==null) {
-		    				s=new Subzone(Residence.this, name, c.getSection("Subzone."+name));
-		    				cache.put(Residence.this.name, name, s);
-		    			}
-		    		return s;
-		    		}
-		    		return null;
-		        }}).get();
+		if(getSubzones().contains(name)) {
+			Subzone s = cache.containsKey(name) ? cache.get(Residence.this.name,name) : null;
+			if(s==null) {
+				s=new Subzone(Residence.this, name, c.getSection("Subzone."+name));
+				cache.put(Residence.this.name, name, s);
+			}
+		return s;
+		}
+		return null;
 	}
 
 	public Subzone createSubzone(String string, Position location, Position location2) {

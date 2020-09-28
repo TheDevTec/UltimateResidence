@@ -10,8 +10,6 @@ import org.bukkit.Location;
 import org.bukkit.World;
 import org.bukkit.entity.Player;
 
-import com.google.common.collect.Maps;
-
 import me.DevTec.TheAPI.TheAPI;
 import me.DevTec.TheAPI.BlocksAPI.BlocksAPI;
 import me.DevTec.TheAPI.ConfigAPI.Config;
@@ -23,7 +21,7 @@ import me.DevTec.UltimateResidence.Utils.Group.SizeType;
 import me.DevTec.UltimateResidence.Utils.ResEvents;
 
 public class API {
-	private static HashMap<String, Residence> cache = Maps.newHashMap();
+	private static HashMap<String, Residence> cache = new HashMap<>();
 	public static void reload() {
 		for(World w : Loader.map.keySet()) 
 			Loader.map.get(w).reload();
@@ -132,6 +130,7 @@ public static Residence getResidence(Position location) {
     		Residence rr=null;
     		Config ac = Loader.getData(location.getWorld());
         	for(String s : getResidences(location.getWorld())) {
+        		if(!ac.exists("Residence."+s+".Corners"))continue;
         		String[] sd = ac.getString("Residence."+s+".Corners").split(":");
 		if(BlocksAPI.isInside(location, Position.fromString(sd[0]), Position.fromString(sd[1]))) {
 			rr = getResidence(location.getWorld(),s);
@@ -155,7 +154,13 @@ public static Residence getResidence(Position location) {
 		   return sub.inside(anotherOne.getCorners()[0])&&sub.inside(anotherOne.getCorners()[1]);
 	}
 
+	private static HashMap<String, Data> cacher = new HashMap<>();
 	public static Data getData(String player) {
-		return new Data(player);
+		if(!cacher.containsKey(player))cacher.put(player, new Data(player));
+		return cacher.get(player);
+	}
+	
+	public static void removeCached(String player) {
+		cacher.remove(player);
 	}
 }

@@ -95,10 +95,10 @@ public class InfoCmd {
 		return;
 	}
 
-	private String constructFlags(List<String> list) {
+	private String constructFlags(List<Object> list) {
 		List<String> a = new ArrayList<String>();
-		for(String f : list) {
-			String[] d = f.split(":");
+		for(Object f : list) {
+			String[] d = f.toString().split(":");
 			a.add((Boolean.valueOf(d[1])?"&a" : "&c")+d[0]);
 		}
 		return StringUtils.join(a,"&7, ");

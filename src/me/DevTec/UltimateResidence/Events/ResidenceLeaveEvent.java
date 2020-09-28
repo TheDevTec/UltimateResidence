@@ -2,14 +2,12 @@ package me.DevTec.UltimateResidence.Events;
 
 import org.bukkit.Location;
 import org.bukkit.entity.Player;
-import org.bukkit.event.Event;
-import org.bukkit.event.HandlerList;
 
 import me.DevTec.UltimateResidence.Loader;
 import me.DevTec.UltimateResidence.API.API;
 import me.DevTec.UltimateResidence.API.Residence;
 
-public class ResidenceLeaveEvent extends Event {
+public class ResidenceLeaveEvent extends me.DevTec.TheAPI.Utils.Listener.Event {
 	private Player s;
 	private Residence r;
 	private Location loc;
@@ -65,16 +63,5 @@ public class ResidenceLeaveEvent extends Event {
 	
 	public Player getPlayer() {
 		return s;
-	}
-	
-	private static final HandlerList a = new HandlerList();
-	
-	@Override
-	public HandlerList getHandlers() {
-		return a;
-	}
-
-	public static HandlerList getHandlerList() {
-		return a;
 	}
 }

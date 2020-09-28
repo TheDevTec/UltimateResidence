@@ -13,9 +13,18 @@ import me.DevTec.UltimateResidence.Utils.Group;
 public class Data {
 	private String s;
 	private User c;
+	private Group g;
 	public Data(String player) {
 		s=player;
 		c=TheAPI.getUser(player);
+		String g="default";
+		if(Loader.g.getString("Groups")!=null)
+					for(String sd: Loader.g.getKeys("Groups"))
+						if(Bukkit.getPlayer(s).hasPermission("residence.group."+sd)) {
+							g = sd;
+							break;
+			}
+		this.g = new Group(g);
 	}
 	
 	public String getName() {
@@ -24,14 +33,7 @@ public class Data {
 
 
 	public Group getGroup() {
-		String g="default";
-		if(Loader.g.getString("Groups")!=null)
-					for(String sd: Loader.g.getKeys("Groups"))
-						if(Bukkit.getPlayer(s).hasPermission("residence.group."+sd)) {
-							g = sd;
-							break;
-			}
-		return new Group(g);
+		return g;
 	}
 
 	public int getAmountOfResidences() {

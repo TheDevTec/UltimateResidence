@@ -1,14 +1,12 @@
 package me.DevTec.UltimateResidence.Events;
 
 import org.bukkit.entity.Player;
-import org.bukkit.event.Event;
-import org.bukkit.event.HandlerList;
 
 import me.DevTec.UltimateResidence.Loader;
 import me.DevTec.UltimateResidence.API.API;
 import me.DevTec.UltimateResidence.API.Residence;
 
-public class ResidenceEnterEvent extends Event {
+public class ResidenceEnterEvent extends me.DevTec.TheAPI.Utils.Listener.Event {
 	private Player s;
 	private Residence r;
 	private String ac,chat;
@@ -17,15 +15,12 @@ public class ResidenceEnterEvent extends Event {
 		this.s=s;
 		this.r=r;
 		String group = API.getData(s.getName()).getGroup().getName();
-		if(Loader.g.getBoolean("Groups."+group+".Chat.Use")) {
+		if(Loader.g.getBoolean("Groups."+group+".Chat.Use"))
 			setChat(Loader.g.getString("Groups."+group+".Chat.Enter"));
-		}
-		if(Loader.g.getBoolean("Groups."+group+".Title.Use")) {
+		if(Loader.g.getBoolean("Groups."+group+".Title.Use"))
 			setTitle(Loader.g.getString("Groups."+group+".Title.Enter.Line1"),Loader.g.getString("Groups."+group+".Title.Enter.Line2"));
-		}
-		if(Loader.g.getBoolean("Groups."+group+".ActionBar.Use")) {
+		if(Loader.g.getBoolean("Groups."+group+".ActionBar.Use"))
 			setActionBar(Loader.g.getString("Groups."+group+".ActionBar.Enter"));
-		}
 	}
 	
 	public void setTitle(String a, String b) {
@@ -60,17 +55,4 @@ public class ResidenceEnterEvent extends Event {
 	public Player getPlayer() {
 		return s;
 	}
-	
-
-	private static final HandlerList a = new HandlerList();
-	
-	@Override
-	public HandlerList getHandlers() {
-		return a;
-	}
-
-	public static HandlerList getHandlerList() {
-		return a;
-	}
-
 }

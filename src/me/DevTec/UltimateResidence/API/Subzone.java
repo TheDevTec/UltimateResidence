@@ -2,9 +2,7 @@ package me.DevTec.UltimateResidence.API;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.concurrent.Callable;
 
-import org.bukkit.Location;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
 
@@ -13,7 +11,6 @@ import me.DevTec.TheAPI.ConfigAPI.Section;
 import me.DevTec.TheAPI.Utils.Position;
 import me.DevTec.TheAPI.Utils.StringUtils;
 import me.DevTec.UltimateResidence.Loader;
-import me.DevTec.UltimateResidence.Utils.Executor;
 
 public class Subzone {
 	private Residence r;
@@ -78,48 +75,40 @@ public class Subzone {
 	}
 
 	public boolean getFlag(Flag f){
-		return (Boolean)new Executor(new Callable<Boolean>() {
-			public Boolean call() {
-				boolean fr = false;
-				for(String a : getFlags()) {
-					String[] s = a.split(":");
-					if(s[0].equalsIgnoreCase(f.name())) {
-						fr=Boolean.valueOf(s[1]);
-						break;
-					}
-				}
-				return fr;
+		boolean fr = false;
+		for(Object a : getFlags()) {
+			String[] s = a.toString().split(":");
+			if(s[0].equalsIgnoreCase(f.name())) {
+				fr=Boolean.valueOf(s[1]);
+				break;
 			}
-		}).get();
+		}
+		return fr;
 	}
 
 	public boolean getPlayerFlag(Flag f, String player){
 		if(getMembers().contains(player))return true; //members has all flags!
-		return (Boolean) new Executor(new Callable<Boolean>() {
-			public Boolean call() {
-				boolean fr = false;
-				if(getMembers().contains(player))return true; //members has all flags!
-				for(String a : getPlayerFlags()) {
-					String[] s = a.split(":");
-					if(s[1].equalsIgnoreCase(f.name()) && s[0].equals(player)) {
-						fr=Boolean.valueOf(s[2]);
-						break;
-					}
-				}
-				return fr;
+		boolean fr = false;
+		if(getMembers().contains(player))return true; //members has all flags!
+		for(Object a : getPlayerFlags()) {
+			String[] s = a.toString().split(":");
+			if(s[1].equalsIgnoreCase(f.name()) && s[0].equals(player)) {
+				fr=Boolean.valueOf(s[2]);
+				break;
 			}
-		}).get();
+		}
+		return fr;
 	}
-	public List<String> getFlags(){
-		return c.getStringList("Flags-Global");
+	public List<Object> getFlags(){
+		return c.getList("Flags-Global");
 	}
 
-	public List<String> getPlayerFlags(){
-		return c.getStringList("Flags-Player");
+	public List<Object> getPlayerFlags(){
+		return c.getList("Flags-Player");
 	}
 	
 	public void setFlag(Flag flag, boolean value) {
-		List<String> a = getFlags();
+		List<Object> a = getFlags();
 		if(a.contains(flag.name()+":"+value))return;
 		if(a.contains(flag.name()+":"+(!value)))a.remove(flag.name()+":"+(!value));
 		a.add(flag.name()+":"+value);
@@ -128,7 +117,7 @@ public class Subzone {
 	}
 	
 	public void setFlag(Flag flag, String player, boolean value) {
-		List<String> b = getPlayerFlags();
+		List<Object> b = getPlayerFlags();
 		if(b.contains(player+":"+flag.name()+":"+value))return;
 		if(b.contains(player+":"+flag.name()+":"+(!value)))b.remove(player+":"+flag.name()+":"+(!value));
 		b.add(player+":"+flag.name()+":"+value);
@@ -142,10 +131,6 @@ public class Subzone {
 
 	public boolean inside(Entity ent){
 		return inside(new Position(ent.getLocation()));
-	}
-
-	public boolean inside(Location loc){
-		return inside(new Position(loc));
 	}
 
 	public boolean inside(Position c) {
