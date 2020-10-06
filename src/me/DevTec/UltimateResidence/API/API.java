@@ -96,7 +96,7 @@ public class API {
 			public void run() {
 				a.save();
 			}
-		}.runAsync();
+		}.runTask();
 		Residence r = new Residence(res, a.getSection("Residence."+res));
 		r.setFlag(Flag.MOVE, true);
 		r.setFlag(Flag.FLY, true);
@@ -122,7 +122,7 @@ public class API {
 			public void run() {
 				a.save();
 			}
-		}.runAsync();
+		}.runTask();
 		cache.remove(res);
 	}
 	

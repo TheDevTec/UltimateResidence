@@ -133,7 +133,7 @@ public class Loader extends JavaPlugin {
 				p.setFoodLevel((p.getFoodLevel()+2) < 20 ? p.getFoodLevel()+2 : 20);
 			}}}catch(Exception er) {}
 			}
-		}.repeatingAsync(0,10);
+		}.runRepeating(0,10);
 		new Tasker() {
 			HashMap<String, Location> from = new HashMap<>();
 			HashMap<String, Residence> in =new HashMap<>();
@@ -285,7 +285,7 @@ public class Loader extends JavaPlugin {
 					TheAPI.msg(er.getStackTrace()[0].toString(), TheAPI.getConsole());
 				}
 			}
-		}.repeatingAsync(0,3);
+		}.runRepeating(0,3);
 	}
 	
 	public void onDisable() {
