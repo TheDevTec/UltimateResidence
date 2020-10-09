@@ -3,7 +3,6 @@ package me.DevTec.UltimateResidence;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
-import java.util.WeakHashMap;
 
 import org.bukkit.Bukkit;
 import org.bukkit.GameMode;
@@ -38,7 +37,7 @@ public class Loader extends JavaPlugin {
 	public static boolean loaded;
 	public static Config c = new Config("UltimateResidence/Config.yml");
 	public static Config g = new Config("UltimateResidence/Groups.yml");
-	public static WeakHashMap<World, Config> map = new WeakHashMap<>();
+	public static HashMap<World, Config> map = new HashMap<>();
 	public static ArrayList<String> debugging = Lists.newArrayList();
 	public void onEnable() {
 		a=this;
@@ -286,6 +285,8 @@ public class Loader extends JavaPlugin {
 				}
 			}
 		}.runRepeating(0,3);
+		for(World w : Bukkit.getWorlds())
+			getData(w);
 	}
 	
 	public void onDisable() {
@@ -294,10 +295,8 @@ public class Loader extends JavaPlugin {
 	
 	public static Config getData(World world) {
 		if(world==null)return null;
-		if(!map.containsKey(world)) {
-			Config config = new Config("UltimateResidence/Data/"+world.getName()+".yml");
-			map.put(world, config);
-		}
+		if(!map.containsKey(world))
+			map.put(world, new Config("UltimateResidence/Data/"+world.getName()+".yml"));
 		return map.get(world);
 	}
 }

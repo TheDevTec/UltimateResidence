@@ -47,11 +47,11 @@ public class API {
 
 	public static Residence getResidenceByName(String residence) {
 		Residence r = null;
-		for(World w : Bukkit.getWorlds())
+		for(World w : Bukkit.getWorlds()) {
 			if(getResidences(w).contains(residence)) {
 				r=getResidence(w,residence);
 				break;
-			}
+			}}
 		return r;
 	}
 	
@@ -74,10 +74,7 @@ public class API {
 	}
 
 	private static List<String> getResidences(World world) {
-		List<String> a = new ArrayList<String>();
-		for(String s: Loader.getData(world).getKeys("Residence"))
-			a.add(s);
-		return a;
+		return new ArrayList<String>(Loader.getData(world).getKeys("Residence"));
 	}
 
 	public static void create(World world, String owner,String res) {
