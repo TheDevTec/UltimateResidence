@@ -1,6 +1,5 @@
 package me.DevTec.UltimateResidence;
 
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
 
@@ -10,8 +9,6 @@ import org.bukkit.Location;
 import org.bukkit.World;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.java.JavaPlugin;
-
-import com.google.common.collect.Lists;
 
 import me.DevTec.TheAPI.TheAPI;
 import me.DevTec.TheAPI.ConfigAPI.Config;
@@ -34,11 +31,8 @@ import me.DevTec.UltimateResidence.Utils.ad;
 
 public class Loader extends JavaPlugin {
 	public static Loader a;
-	public static boolean loaded;
-	public static Config c = new Config("UltimateResidence/Config.yml");
-	public static Config g = new Config("UltimateResidence/Groups.yml");
+	public static Config c = new Config("UltimateResidence/Config.yml"), g = new Config("UltimateResidence/Groups.yml");
 	public static HashMap<World, Config> map = new HashMap<>();
-	public static ArrayList<String> debugging = Lists.newArrayList();
 	public void onEnable() {
 		a=this;
 		g.addDefault("Groups.default.Residences", 5);
@@ -278,7 +272,7 @@ public class Loader extends JavaPlugin {
 					    							.replace("%owner", rs.getOwner()), p);
 					    				}}
 					if(cancel)
-						Ref.invoke(Ref.playerCon(p),"teleport",from);
+						Ref.invoke(Ref.playerCon(p),Ref.method(Ref.nms("PlayerConnection"), "teleport", org.bukkit.Location.class),from);
 					this.from.put(p.getName(), p.getLocation());
 				}}catch(Exception er) {
 					TheAPI.msg(er.getStackTrace()[0].toString(), TheAPI.getConsole());

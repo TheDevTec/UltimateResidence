@@ -6,7 +6,6 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
 import me.DevTec.TheAPI.TheAPI;
-import me.DevTec.UltimateResidence.Loader;
 import me.DevTec.UltimateResidence.Utils.ad;
 
 public class URCMD implements CommandExecutor {
@@ -38,22 +37,7 @@ public class URCMD implements CommandExecutor {
 			TheAPI.msg(d+"&e/Residence list [user]", s); //done
 			if(ad.has(s,"residence.reload"))
 			TheAPI.msg(d+"&e/Residence reload", s); //done
-			if(ad.has(s,"residence.debug"))
-			TheAPI.msg(d+"&e/Residence debug", s); //done
 			TheAPI.msg("&8&l»------ &c&lUltimateResidence &8&l------»", s);
-			return true;
-		}
-		if(args[0].equalsIgnoreCase("debug")) {
-			if(!ad.has(s,"residence.debug")) {
-				return true;
-			}
-			if(Loader.debugging.contains(s.getName())) {
-				Loader.debugging.remove(s.getName());
-				TheAPI.msg(URCMD.d+"&7Debug mode disabled", s);
-			}else {
-				Loader.debugging.add(s.getName());
-				TheAPI.msg(URCMD.d+"&7Debug mode enabled", s);
-			}
 			return true;
 		}
 		if(args[0].equalsIgnoreCase("reload")) {
