@@ -104,7 +104,6 @@ public class Loader extends JavaPlugin {
 					Subzone z = r.getSubzone(p);
 				if(z!=null) {
 						if(z.getFlag(Flag.HEAL)||z.getPlayerFlag(Flag.HEAL,p.getName())) {
-							@SuppressWarnings("deprecation")
 							double max = p.getMaxHealth();
 							if(p.getHealth() !=max)
 							p.setHealth((p.getHealth()+2) <max ? p.getHealth()+2 :max);
@@ -116,7 +115,6 @@ public class Loader extends JavaPlugin {
 					return;
 				}
 		if(r.getFlag(Flag.HEAL)||r.getPlayerFlag(Flag.HEAL,p.getName())) {
-			@SuppressWarnings("deprecation")
 			double max = p.getMaxHealth();
 				if(p.getHealth() !=max)
 				p.setHealth((p.getHealth()+2) <max ? p.getHealth()+2 :max);
