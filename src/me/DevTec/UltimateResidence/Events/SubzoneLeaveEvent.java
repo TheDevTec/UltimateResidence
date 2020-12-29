@@ -2,13 +2,14 @@ package me.DevTec.UltimateResidence.Events;
 
 import org.bukkit.entity.Player;
 
-import me.DevTec.TheAPI.Utils.Position;
 import me.DevTec.UltimateResidence.Loader;
 import me.DevTec.UltimateResidence.API.API;
 import me.DevTec.UltimateResidence.API.Residence;
 import me.DevTec.UltimateResidence.API.Subzone;
+import me.devtec.theapi.utils.Position;
+import me.devtec.theapi.utils.listener.Event;
 
-public class SubzoneLeaveEvent extends me.DevTec.TheAPI.Utils.Listener.Event {
+public class SubzoneLeaveEvent extends Event {
 	private Player s;
 	private Subzone r;
 	private Position loc;

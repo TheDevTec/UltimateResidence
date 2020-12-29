@@ -10,21 +10,22 @@ import org.bukkit.Location;
 import org.bukkit.World;
 import org.bukkit.entity.Player;
 
-import me.DevTec.TheAPI.TheAPI;
-import me.DevTec.TheAPI.BlocksAPI.BlocksAPI;
-import me.DevTec.TheAPI.ConfigAPI.Config;
-import me.DevTec.TheAPI.Scheduler.Tasker;
-import me.DevTec.TheAPI.Utils.Position;
-import me.DevTec.TheAPI.Utils.StringUtils;
 import me.DevTec.UltimateResidence.Loader;
 import me.DevTec.UltimateResidence.Utils.Group.SizeType;
 import me.DevTec.UltimateResidence.Utils.ResEvents;
+import me.devtec.theapi.TheAPI;
+import me.devtec.theapi.blocksapi.BlocksAPI;
+import me.devtec.theapi.scheduler.Tasker;
+import me.devtec.theapi.utils.Position;
+import me.devtec.theapi.utils.StringUtils;
 
 public class API {
 	private static HashMap<String, Residence> cache = new HashMap<>();
 	public static void reload() {
-		for(World w : Loader.map.keySet()) 
-			Loader.map.get(w).reload();
+		Loader.map.clear();
+		for(World w : Bukkit.getWorlds()) { 
+			Loader.getData(w);
+		}
 		Loader.c.reload();
 		Loader.g.reload();
 	}
@@ -33,7 +34,7 @@ public class API {
 		if(Loader.getData(world).exists("Residence."+residence)) {
 			Residence r = cache.containsKey(residence) ? cache.get(residence) : null;
 			if(r==null) {
-				r=new Residence(residence,Loader.getData(world).getSection("Residence."+residence));
+				r=new Residence(residence,Loader.getData(world), "Residence."+residence);
 				cache.put(residence, r);
 			}
 			return r;
@@ -78,7 +79,7 @@ public class API {
 	}
 
 	public static void create(World world, String owner,String res) {
-		Config a = Loader.getData(world);
+		me.devtec.theapi.utils.datakeeper.Data a = Loader.getData(world);
 		a.set("Residence."+res+".Corners", 
 				StringUtils.getLocationAsString(ResEvents.locs.get(owner)[0].toLocation())+":"+
 						StringUtils.getLocationAsString(ResEvents.locs.get(owner)[1].toLocation()));
@@ -94,7 +95,7 @@ public class API {
 				a.save();
 			}
 		}.runTask();
-		Residence r = new Residence(res, a.getSection("Residence."+res));
+		Residence r = new Residence(res, a, "Residence."+res);
 		r.setFlag(Flag.MOVE, true);
 		r.setFlag(Flag.FLY, true);
 		r.setFlag(Flag.DOOR, true);
@@ -113,7 +114,7 @@ public class API {
 
 	public static void delete(String owner,String res) {
 		getData(owner).removeResidence(getResidenceByName(res));
-		Config a = Loader.getData(getResidenceByName(res).getWorld());
+		me.devtec.theapi.utils.datakeeper.Data a = Loader.getData(getResidenceByName(res).getWorld());
 		a.set("Residence."+res,null);
 		new Tasker() {
 			public void run() {
@@ -125,7 +126,7 @@ public class API {
 	
 public static Residence getResidence(Position location) {
     		Residence rr=null;
-    		Config ac = Loader.getData(location.getWorld());
+    	    me.devtec.theapi.utils.datakeeper.Data ac = Loader.getData(location.getWorld());
         	for(String s : getResidences(location.getWorld())) {
         		if(!ac.exists("Residence."+s+".Corners"))continue;
         		String[] sd = ac.getString("Residence."+s+".Corners").split(":");

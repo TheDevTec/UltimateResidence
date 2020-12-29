@@ -6,8 +6,9 @@ import org.bukkit.entity.Player;
 import me.DevTec.UltimateResidence.Loader;
 import me.DevTec.UltimateResidence.API.API;
 import me.DevTec.UltimateResidence.API.Residence;
+import me.devtec.theapi.utils.listener.Event;
 
-public class ResidenceLeaveEvent extends me.DevTec.TheAPI.Utils.Listener.Event {
+public class ResidenceLeaveEvent extends Event {
 	private Player s;
 	private Residence r;
 	private Location loc;

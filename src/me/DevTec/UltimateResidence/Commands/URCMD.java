@@ -5,8 +5,8 @@ import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
-import me.DevTec.TheAPI.TheAPI;
 import me.DevTec.UltimateResidence.Utils.ad;
+import me.devtec.theapi.TheAPI;
 
 public class URCMD implements CommandExecutor {
 	public static String d = "&c&lUResidence &8&l» &7";

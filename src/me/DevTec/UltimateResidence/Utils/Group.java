@@ -1,7 +1,7 @@
 package me.DevTec.UltimateResidence.Utils;
 
-import me.DevTec.TheAPI.Utils.StringUtils;
 import me.DevTec.UltimateResidence.Loader;
+import me.devtec.theapi.utils.StringUtils;
 
 public class Group {
 	private String s;

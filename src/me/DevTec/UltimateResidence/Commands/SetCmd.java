@@ -2,11 +2,11 @@ package me.DevTec.UltimateResidence.Commands;
 
 import org.bukkit.entity.Player;
 
-import me.DevTec.TheAPI.TheAPI;
 import me.DevTec.UltimateResidence.API.API;
 import me.DevTec.UltimateResidence.API.Flag;
 import me.DevTec.UltimateResidence.API.Residence;
 import me.DevTec.UltimateResidence.API.Subzone;
+import me.devtec.theapi.TheAPI;
 
 public class SetCmd {
 	public SetCmd(Player s, String[] args) {

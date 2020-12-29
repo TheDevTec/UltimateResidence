@@ -2,9 +2,9 @@ package me.DevTec.UltimateResidence.Commands;
 
 import org.bukkit.entity.Player;
 
-import me.DevTec.TheAPI.TheAPI;
-import me.DevTec.TheAPI.Utils.Position;
 import me.DevTec.UltimateResidence.Utils.ResEvents;
+import me.devtec.theapi.TheAPI;
+import me.devtec.theapi.utils.Position;
 
 public class VertCmd {
 

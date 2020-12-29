@@ -3,10 +3,10 @@ package me.DevTec.UltimateResidence.Commands;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
-import me.DevTec.TheAPI.TheAPI;
 import me.DevTec.UltimateResidence.API.API;
 import me.DevTec.UltimateResidence.API.Residence;
 import me.DevTec.UltimateResidence.API.Subzone;
+import me.devtec.theapi.TheAPI;
 
 public class PDel {
 

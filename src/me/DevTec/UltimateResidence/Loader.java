@@ -1,7 +1,9 @@
 package me.DevTec.UltimateResidence;
 
+import java.io.File;
 import java.util.Arrays;
 import java.util.HashMap;
+import java.util.Map.Entry;
 
 import org.bukkit.Bukkit;
 import org.bukkit.GameMode;
@@ -10,11 +12,6 @@ import org.bukkit.World;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.java.JavaPlugin;
 
-import me.DevTec.TheAPI.TheAPI;
-import me.DevTec.TheAPI.ConfigAPI.Config;
-import me.DevTec.TheAPI.Scheduler.Tasker;
-import me.DevTec.TheAPI.Utils.Position;
-import me.DevTec.TheAPI.Utils.Reflections.Ref;
 import me.DevTec.UltimateResidence.API.API;
 import me.DevTec.UltimateResidence.API.Flag;
 import me.DevTec.UltimateResidence.API.Residence;
@@ -28,11 +25,20 @@ import me.DevTec.UltimateResidence.Events.SubzoneLeaveEvent;
 import me.DevTec.UltimateResidence.Events.SubzoneSwitchEvent;
 import me.DevTec.UltimateResidence.Utils.ResEvents;
 import me.DevTec.UltimateResidence.Utils.ad;
+import me.devtec.theapi.TheAPI;
+import me.devtec.theapi.configapi.Config;
+import me.devtec.theapi.scheduler.Tasker;
+import me.devtec.theapi.utils.Position;
+import me.devtec.theapi.utils.datakeeper.Data;
+import me.devtec.theapi.utils.datakeeper.Data.DataHolder;
+import me.devtec.theapi.utils.datakeeper.loader.YamlLoader;
+import me.devtec.theapi.utils.datakeeper.maps.UnsortedMap;
+import me.devtec.theapi.utils.reflections.Ref;
 
 public class Loader extends JavaPlugin {
 	public static Loader a;
 	public static Config c = new Config("UltimateResidence/Config.yml"), g = new Config("UltimateResidence/Groups.yml");
-	public static HashMap<World, Config> map = new HashMap<>();
+	public static UnsortedMap<World, Data> map = new UnsortedMap<>();
 	public void onEnable() {
 		a=this;
 		g.addDefault("Groups.default.Residences", 5);
@@ -89,9 +95,10 @@ public class Loader extends JavaPlugin {
 		g.addDefault("Groups.admin.Chat.Enter", "&7Welcome &a%player &7in residence &a%residence&7, owned by: &a%owner");
 		g.addDefault("Groups.admin.Chat.Leave", "&7Leaving residence &a%residence");
 		
-		g.getData().setHeader(Arrays.asList("residence.group.<group> to get access for group","Required relog of player to apply new group"));
+		g.setHeader(Arrays.asList("residence.group.<group> to get access for group","Required relog of player to apply new group"));
+		g.save();
 		c.addDefault("ShowNoPermsMsg", true);
-				
+		c.save();
 		Bukkit.getPluginCommand("UltimateResidence").setExecutor(new URCMD());
 		Bukkit.getPluginManager().registerEvents(new ResEvents(), this);
 		new Tasker() {
@@ -285,10 +292,26 @@ public class Loader extends JavaPlugin {
 		API.reload();
 	}
 	
-	public static Config getData(World world) {
+	public static Data getData(World world) {
 		if(world==null)return null;
-		if(!map.containsKey(world))
-			map.put(world, new Config("UltimateResidence/Data/"+world.getName()+".yml"));
+		if(!map.containsKey(world)) {
+			Data d = new Data();
+			YamlLoader loader = new YamlLoader();
+			File ff = new File("plugins/UltimateResidence/Data/"+world.getName()+".yml");
+			if(!ff.exists()) {
+				ff.getParentFile().mkdirs();
+				try {
+					ff.createNewFile();
+				} catch (Exception e) {
+				}
+			}
+			loader.load(ff);
+			for(Entry<String, DataHolder> a : loader.get().entrySet()) {
+				d.set(a.getKey(), a.getValue().getValue());
+				d.setComments(a.getKey(), a.getValue().getComments());
+			}
+			map.put(world, d);
+		}
 		return map.get(world);
 	}
 }

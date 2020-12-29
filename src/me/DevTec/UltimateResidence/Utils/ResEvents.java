@@ -21,13 +21,13 @@ import org.bukkit.event.player.PlayerItemDamageEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
 import org.bukkit.event.player.PlayerToggleFlightEvent;
 
-import me.DevTec.TheAPI.TheAPI;
-import me.DevTec.TheAPI.Utils.Position;
 import me.DevTec.UltimateResidence.Loader;
 import me.DevTec.UltimateResidence.API.API;
 import me.DevTec.UltimateResidence.API.Flag;
 import me.DevTec.UltimateResidence.API.Residence;
 import me.DevTec.UltimateResidence.API.Subzone;
+import me.devtec.theapi.TheAPI;
+import me.devtec.theapi.utils.Position;
 
 public class ResEvents implements Listener {
 	private static HashMap<Player, Long> wait =new HashMap<>(),w = new HashMap<>();

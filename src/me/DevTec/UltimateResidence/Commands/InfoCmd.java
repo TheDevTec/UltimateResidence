@@ -1,16 +1,17 @@
 package me.DevTec.UltimateResidence.Commands;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
-import me.DevTec.TheAPI.TheAPI;
-import me.DevTec.TheAPI.Utils.StringUtils;
 import me.DevTec.UltimateResidence.API.API;
 import me.DevTec.UltimateResidence.API.Residence;
 import me.DevTec.UltimateResidence.API.Subzone;
+import me.devtec.theapi.TheAPI;
+import me.devtec.theapi.utils.StringUtils;
 
 public class InfoCmd {
 
@@ -95,7 +96,7 @@ public class InfoCmd {
 		return;
 	}
 
-	private String constructFlags(List<Object> list) {
+	private String constructFlags(Collection<Object> list) {
 		List<String> a = new ArrayList<String>();
 		for(Object f : list) {
 			String[] d = f.toString().split(":");

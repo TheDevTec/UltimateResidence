@@ -5,10 +5,10 @@ import java.util.List;
 
 import org.bukkit.Bukkit;
 
-import me.DevTec.TheAPI.TheAPI;
-import me.DevTec.TheAPI.Utils.DataKeeper.User;
 import me.DevTec.UltimateResidence.Loader;
 import me.DevTec.UltimateResidence.Utils.Group;
+import me.devtec.theapi.TheAPI;
+import me.devtec.theapi.utils.datakeeper.User;
 
 public class Data {
 	private String s;

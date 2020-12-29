@@ -1,28 +1,29 @@
 package me.DevTec.UltimateResidence.API;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
 
-import me.DevTec.TheAPI.BlocksAPI.BlocksAPI;
-import me.DevTec.TheAPI.ConfigAPI.Section;
-import me.DevTec.TheAPI.Utils.Position;
-import me.DevTec.TheAPI.Utils.StringUtils;
-import me.DevTec.UltimateResidence.Loader;
+import me.devtec.theapi.blocksapi.BlocksAPI;
+import me.devtec.theapi.utils.Position;
+import me.devtec.theapi.utils.StringUtils;
 
 public class Subzone {
 	private Residence r;
 	private double[] size;
 	private String s;
+	private me.devtec.theapi.utils.datakeeper.Data d;
 	private Position[] l;
-	private Section c;
-	public Subzone(Residence residence, String name, Section configurationSection) {
+	private String c;
+	public Subzone(Residence residence, String name, me.devtec.theapi.utils.datakeeper.Data d, String configurationSection) {
 		r=residence;
 		s=name;
+		this.d=d;
 		c=configurationSection;
-		String[] corners = c.getString("Corners").split(":");
+		String[] corners = d.getString(c+".Corners").split(":");
 		l=new Position[] {Position.fromString(corners[0]),Position.fromString(corners[1])};
 		size = new double[] {Math.max(l[0].getBlockX(), l[1].getBlockX()) - Math.min(l[0].getBlockX(), l[1].getBlockX()) + 1
 	    , Math.max(l[0].getBlockZ(), l[1].getBlockZ())-Math.min(l[0].getBlockZ(), l[1].getBlockZ())+1};
@@ -43,16 +44,16 @@ public class Subzone {
 	 * @return int[]
 	 */
 	public int[] getMaximumSize() {
-		String[]d = c.getString("Residence."+r.getName()+".Limit.Size").split("x");
+		String[] d = this.d.getString(c+".Residence."+r.getName()+".Limit.Size").split("x");
 		return new int[] {StringUtils.getInt(d[0]),StringUtils.getInt(d[1])};
 	}
 
 	public void setSpawn(Position location) {
-		c.set("Tp",location.toString());
+		d.set(c+".Tp",location.toString());
 	}
 
 	public Position getSpawn() {
-		return Position.fromString(c.getString("Tp"));
+		return Position.fromString(d.getString(c+".Tp"));
 	}
 	
 	public String getName() {
@@ -99,30 +100,30 @@ public class Subzone {
 		}
 		return fr;
 	}
-	public List<Object> getFlags(){
-		return c.getList("Flags-Global");
+	public Collection<Object> getFlags(){
+		return d.getList(c+".Flags-Global");
 	}
 
-	public List<Object> getPlayerFlags(){
-		return c.getList("Flags-Player");
+	public Collection<Object> getPlayerFlags(){
+		return d.getList(c+".Flags-Player");
 	}
 	
 	public void setFlag(Flag flag, boolean value) {
-		List<Object> a = getFlags();
+		Collection<Object> a = getFlags();
 		if(a.contains(flag.name()+":"+value))return;
 		if(a.contains(flag.name()+":"+(!value)))a.remove(flag.name()+":"+(!value));
 		a.add(flag.name()+":"+value);
-		c.set("Flags-Global",a);
-		Loader.getData(l[0].getWorld()).save();
+		d.set(c+".Flags-Global",a);
+		d.save();
 	}
 	
 	public void setFlag(Flag flag, String player, boolean value) {
-		List<Object> b = getPlayerFlags();
+		Collection<Object> b = getPlayerFlags();
 		if(b.contains(player+":"+flag.name()+":"+value))return;
 		if(b.contains(player+":"+flag.name()+":"+(!value)))b.remove(player+":"+flag.name()+":"+(!value));
 		b.add(player+":"+flag.name()+":"+value);
-		c.set("Flags-Player",b);
-		Loader.getData(l[0].getWorld()).save();
+		d.set(c+".Flags-Player",b);
+		d.save();
 	}
 
 	public boolean inside(Player player){
@@ -145,28 +146,28 @@ public class Subzone {
 		List<String> a = getMembers();
 		if(a.contains(player))return;
 		a.add(player);
-		c.set("Members",a);
-		Loader.getData(l[0].getWorld()).save();
+		d.set(c+".Members",a);
+		d.save();
 	}
 	
 	public void removeMember(String player) {
 		List<String> a = getMembers();
 		if(!a.contains(player))return;
 		a.remove(player);
-		c.set("Members",a);
-		Loader.getData(l[0].getWorld()).save();
+		d.set(c+".Members",a);
+		d.save();
 	}
 	
 	public List<String> getMembers(){
-		return c.getStringList("Members");
+		return d.getStringList(c+".Members");
 	}
 	
 	public void setOwner(String name) {
-		c.set("Owner",name);
-		Loader.getData(l[0].getWorld()).save();
+		d.set(c+".Owner",name);
+		d.save();
 	}
 	
 	public String getOwner() {
-		return c.getString("Owner");
+		return d.getString(c+".Owner");
 	}
 }
